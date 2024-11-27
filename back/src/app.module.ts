@@ -5,6 +5,9 @@ import { UsersModule } from './users/users.module';
 import { RolesModule } from './roles/roles.module';
 import { FunctionalsModule } from './functionals/functionals.module';
 import * as process from 'process';
+import { Role } from './roles/entities/role.entity';
+import { Functional } from './functionals/entities/functional.entity';
+import { User } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -17,7 +20,7 @@ import * as process from 'process';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database: process.env.POSTGRES_DB,
-          entities: [],
+          entities: [Role, Functional, User],
           synchronize: true,
         };
       },
