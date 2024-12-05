@@ -8,6 +8,8 @@ import * as process from 'process';
 import { Role } from './roles/entities/role.entity';
 import { Functional } from './functionals/entities/functional.entity';
 import { User } from './users/entities/user.entity';
+import { TopicsModule } from './topics/topics.module';
+import { Topic } from './topics/entities/topic.entity';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { User } from './users/entities/user.entity';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database: process.env.POSTGRES_DB,
-          entities: [Role, Functional, User],
+          entities: [Role, Functional, User, Topic],
           synchronize: true,
         };
       },
@@ -29,6 +31,7 @@ import { User } from './users/entities/user.entity';
     UsersModule,
     RolesModule,
     FunctionalsModule,
+    TopicsModule,
   ],
   controllers: [],
   providers: [],
