@@ -1,7 +1,6 @@
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, JoinTable } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Functional } from '../../functionals/entities/functional.entity';
-import { JoinTable } from 'typeorm/browser';
 
 @Entity()
 export class Role {
