@@ -44,7 +44,9 @@ async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> I
     topic = await topics_service.get_by_id(topic_id)
     parent_id = topic['parentId']
     parent = await topics_service.get_by_id(parent_id)
+    navigation_buttons = []
     number_pages = len(parent['subTopics'])
+    topic_id = parent['subTopics'][current_page - 1]['id']
     if topic['file']:
         file_topic = topic['file']['path']
     else:
@@ -57,14 +59,18 @@ async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> I
 
     buttons.append([InlineKeyboardButton(text='Вернуться назад', callback_data=f'topic_{parent_id}')])
 
-    prev_callback_data = 'prev_page' if current_page > 1 else '#'
-    next_callback_data = 'next_page' if current_page < number_pages else '#'
+    prev_callback_data = f'topic_{topic_id}_prev_page' if current_page + 1 > 1 else '#'
+    next_callback_data = f'topic_{topic_id}_next_page' if current_page + 1 < number_pages else '#'
+    print(topic)
+    if len(topic['subTopics']):
+        navigation_buttons = []
+    else:
+        navigation_buttons = [
+            InlineKeyboardButton(text='⬅️', callback_data=prev_callback_data),
+            InlineKeyboardButton(text=f'{current_page + 1}/{number_pages}', callback_data='#'),
+            InlineKeyboardButton(text='➡️', callback_data=next_callback_data)
+        ]
 
-    navigation_buttons = [
-        InlineKeyboardButton(text='⬅️', callback_data=prev_callback_data),
-        InlineKeyboardButton(text=f'{current_page}/{number_pages}', callback_data='#'),
-        InlineKeyboardButton(text='➡️', callback_data=next_callback_data)
-    ]
     buttons.append(navigation_buttons)
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)

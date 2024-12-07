@@ -35,26 +35,32 @@ async def instructors(callback: types.CallbackQuery, bot: Bot, state: FSMContext
     )
 
 
-@callbacks_router.callback_query(F.data.in_({'prev_page', 'next_page'}))
 @callbacks_router.callback_query(F.data.startswith('topic_'))
 async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
     media_group_ids = data.get('media_group_ids', [])
-    current_page = data.get('current_page', 1)
+    current_page = data.get('current_page', 0)
+    page = ''
+    current_page_callback = ''
 
-    callback_data = callback.data
-    topic_id = callback_data.split('_')[1]
+
+    callback_data = callback.data.split('_')
+    topic_id = callback_data[1]
+    if len(callback_data) == 4:
+        page = callback_data[3]
+        current = callback_data[2]
+        current_page_callback = f'{current}_{page}'
     topic_data = await topics_service.get_by_id(topic_id)
 
-    if topic_id == 'page':
-        current_page = get_page(callback_data, current_page)
+    if page == 'page':
+        current_page = get_page(current_page_callback, current_page)
         await state.update_data(current_page=current_page)
 
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     if media_group_ids:
         for media_group_id in media_group_ids:
             await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=media_group_id)
-        await state.clear()
+        await state.update_data(media_group_ids=[])
 
     if not topic_data['subTopics']:
         if topic_data['photos'] != []:
@@ -84,6 +90,7 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
             reply_markup=await keyboards.functionals.instructors.instructor_topic_menu_keyboard(topic_id, current_page)
         )
     elif topic_data['subTopics']:
+        await state.clear()
         await callback.message.answer(
             text='Инструкции',
             reply_markup=await keyboards.functionals.instructors.instructor_topic_keyboard(topic_id)
