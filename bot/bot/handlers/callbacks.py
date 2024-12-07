@@ -10,6 +10,7 @@ callbacks_router = Router()
 @callbacks_router.callback_query(F.data == 'main_menu')
 async def main_menu(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    await state.clear()
     await callback.message.answer(
         text='Привет! Мы рады приветствовать тебя в команде <b>Чи-Фань</b> 🎉\n\n'
              'Здесь ты найдешь всю важную информацию для комфортной и продуктивной работы:\n\n'
