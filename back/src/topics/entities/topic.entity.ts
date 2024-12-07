@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Photo} from "../../photos/entities/photo.entity";
+import {File} from "../../files/entities/file.entity";
 
 @Entity()
 export class Topic {
@@ -23,4 +24,8 @@ export class Topic {
   @OneToMany(() => Photo, (photo) => photo.topic, { cascade: true })
   @JoinColumn()
   photos: Photo[];
+
+  @OneToOne(() => File, (file) => file.topic)
+  @JoinColumn()
+  file: File;
 }

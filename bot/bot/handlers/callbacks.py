@@ -1,4 +1,5 @@
 from aiogram import Router, types, F, Bot
+from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
 from bot import keyboards
@@ -7,7 +8,7 @@ callbacks_router = Router()
 
 
 @callbacks_router.callback_query(F.data == 'main_menu')
-async def main_menu(callback: types.CallbackQuery, bot: Bot):
+async def main_menu(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer(
         text='Привет! Мы рады приветствовать тебя в команде <b>Чи-Фань</b> 🎉\n\n'

@@ -10,16 +10,16 @@ export class TopicsController {
   async getFirst(): Promise<Topic[]> {
     return await this.topicsService.find({
       where: { type: 'topic' },
-      relations: ['photos'],
+      relations: ['photos', 'file'],
     });
   }
 
   @Get(':id')
   async getById(@Param('id') id: number): Promise<Topic> {
-    const topic = await this.topicsService.findOne({ where: { id } });
+    const topic = await this.topicsService.findOne({ where: { id }, relations: ['photos', 'file'], });
     topic.subTopics = await this.topicsService.find({
       where: { parentId: id },
-      relations: ['photos'],
+      relations: ['photos', 'file'],
     });
     return topic;
   }
