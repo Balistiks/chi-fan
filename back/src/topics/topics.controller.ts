@@ -10,6 +10,7 @@ export class TopicsController {
   async getFirst(): Promise<Topic[]> {
     return await this.topicsService.find({
       where: { type: 'topic' },
+      relations: ['photos'],
     });
   }
 
@@ -18,6 +19,7 @@ export class TopicsController {
     const topic = await this.topicsService.findOne({ where: { id } });
     topic.subTopics = await this.topicsService.find({
       where: { parentId: id },
+      relations: ['photos'],
     });
     return topic;
   }

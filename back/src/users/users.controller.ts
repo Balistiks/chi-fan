@@ -16,8 +16,8 @@ export class UsersController {
   }
 
   @Get(':tgId/functionals')
-  async getFunctionals(@Param('tgId') tgId: number): Promise<Functional> {
-    return await this.functionalsService.findOne({
+  async getFunctionals(@Param('tgId') tgId: number): Promise<Functional[]> {
+    return await this.functionalsService.findAll({
       where: { roles: { users: { tgId } } },
       relations: ['roles', 'roles.users'],
     });

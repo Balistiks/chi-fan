@@ -10,6 +10,8 @@ import { Functional } from './functionals/entities/functional.entity';
 import { User } from './users/entities/user.entity';
 import { TopicsModule } from './topics/topics.module';
 import { Topic } from './topics/entities/topic.entity';
+import { PhotosModule } from './photos/photos.module';
+import { Photo } from './photos/entities/photo.entity';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { Topic } from './topics/entities/topic.entity';
           username: process.env.POSTGRES_USER,
           password: process.env.POSTGRES_PASSWORD,
           database: process.env.POSTGRES_DB,
-          entities: [Role, Functional, User, Topic],
+          entities: [Role, Functional, User, Topic, Photo],
           synchronize: true,
         };
       },
@@ -32,6 +34,7 @@ import { Topic } from './topics/entities/topic.entity';
     RolesModule,
     FunctionalsModule,
     TopicsModule,
+    PhotosModule,
   ],
   controllers: [],
   providers: [],

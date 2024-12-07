@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Photo} from "../../photos/entities/photo.entity";
 
 @Entity()
 export class Topic {
@@ -18,4 +19,8 @@ export class Topic {
 
   @Column({ nullable: true })
   parentId: number;
+
+  @OneToMany(() => Photo, (photo) => photo.topic, { cascade: true })
+  @JoinColumn()
+  photos: Photo[];
 }
