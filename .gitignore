@@ -12,3 +12,5 @@ data/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+docker-compose.yml

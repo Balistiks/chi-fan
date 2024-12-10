@@ -33,7 +33,7 @@ services:
     build:
       context: back
       dockerfile: ../buildfiles/back.dockerfile
-      target: development
+      target: production
     restart: always
     environment:
       POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
@@ -42,6 +42,8 @@ services:
       SECRET_TOKEN: '${SECRET_TOKEN}'
     volumes:
       - ./back/src:/app/src
+      - ./back/db:/app/db
+      - ./db/migrations:/db/migrations
     ports:
       - '3000:3000'
     depends_on:
