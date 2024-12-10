@@ -40,4 +40,4 @@ COPY package.json yarn.lock tsconfig.json ./
 COPY --from=build-production /app/node_modules ./node_modules
 COPY --from=build-production /app/dist ./dist
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
