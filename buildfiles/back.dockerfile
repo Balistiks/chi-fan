@@ -36,7 +36,8 @@ RUN yarn build
 
 FROM node:20-alpine as production
 
-COPY package.json yarn.lock tsconfig.json files/ ./
+COPY package.json yarn.lock tsconfig.json ./
+COPY files/ ./files
 COPY --from=build-production /app/node_modules ./node_modules
 COPY --from=build-production /app/dist ./dist
 
