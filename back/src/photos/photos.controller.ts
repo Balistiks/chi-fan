@@ -9,14 +9,14 @@ export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
   @Get(':id')
-  @Header('Content-type', 'image/png')
+  @Header('Content-type', 'image/*')
   async serveFile(@Param('id') id: number, @Res() res: Response) {
     const photo = await this.photosService.getFileById(id);
     const fileStream = createReadStream(
       join(process.cwd(), `./files/${photo.path}`),
     );
     res.set({
-      'Content-type': 'image/png',
+      'Content-type': 'image/*',
     });
     fileStream.pipe(res);
   }

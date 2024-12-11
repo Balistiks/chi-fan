@@ -11,6 +11,7 @@ export class TopicsController {
     return await this.topicsService.find({
       where: { type: 'topic' },
       relations: ['photos', 'file'],
+      order: { name: 'ASC' },
     });
   }
 
@@ -20,6 +21,7 @@ export class TopicsController {
     topic.subTopics = await this.topicsService.find({
       where: { parentId: id },
       relations: ['photos', 'file'],
+      order: { name: 'ASC' },
     });
     return topic;
   }
