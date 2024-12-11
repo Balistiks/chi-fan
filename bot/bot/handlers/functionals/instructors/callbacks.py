@@ -63,30 +63,38 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
         await state.update_data(media_group_ids=[])
 
     if not topic_data['subTopics']:
-        if topic_data['photos'] != []:
-            media_group = []
+        if topic_data['photos']:
             path_photos = topic_data['photos']
+            media_group_ids = []
 
-            for photo in path_photos:
-                media = types.InputMediaPhoto(
-                    media=types.URLInputFile(
-                        headers=headers,
-                        url=f"http://back:3000/api/photos/{photo['id']}",
-                        filename=photo['path']
+            for i in range(0, len(path_photos), 10):
+                media_group = []
+                group = path_photos[i:i + 10]
+
+                for photo in group:
+                    media = types.InputMediaPhoto(
+                        media=types.URLInputFile(
+                            headers=headers,
+                            url=f"http://back:3000/api/photos/{photo['id']}",
+                            filename=photo['path']
+                        )
                     )
+                    media_group.append(media)
+
+                sent_media_group = await callback.message.bot.send_media_group(
+                    chat_id=callback.message.chat.id,
+                    media=media_group
                 )
-                media_group.append(media)
-            media_group = await callback.message.bot.send_media_group(
-                chat_id=callback.message.chat.id,
-                media=media_group
-            )
-            media = []
-            for media_id in media_group:
-                media_id = media_id.message_id
-                media.append(media_id)
-            await state.update_data(media_group_ids=media)
+                for media_id in sent_media_group:
+                    media_group_ids.append(media_id.message_id)
+            await state.update_data(media_group_ids=media_group_ids)
+
+        text = topic_data['text']
+        text_parts = text.split('#')
+        text = text_parts[current_page]
+
         await callback.message.answer(
-            text=f'{topic_data['text']}',
+            text=f"{text}",
             reply_markup=await keyboards.functionals.instructors.instructor_topic_menu_keyboard(topic_id, current_page)
         )
     elif topic_data['subTopics']:
@@ -94,10 +102,13 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
         await callback.message.answer(
             text='Инструкции',
             reply_markup=await keyboards.functionals.instructors.instructor_topic_keyboard(topic_id)
-
         )
-    path_file = topic_data['file']['path']
-    await state.update_data(path_file=path_file)
+
+    if topic_data['file']['path']:
+        path_file = topic_data['file']['path']
+        await state.update_data(path_file=path_file)
+    else:
+        return None
 
 
 @callbacks_router.callback_query(F.data.startswith('topic-file_'))

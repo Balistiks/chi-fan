@@ -44,8 +44,10 @@ async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> I
     topic = await topics_service.get_by_id(topic_id)
     parent_id = topic['parentId']
     parent = await topics_service.get_by_id(parent_id)
-    number_pages = len(parent['subTopics'])
-    topic_id = parent['subTopics'][current_page - 1]['id']
+    text = topic['text']
+    text_parts = text.split('#')
+    number_pages = len(text_parts)
+    # topic_id = parent['subTopics'][current_page - 1]['id']
     if topic['file']:
         file_topic_id = topic['file']['id']
     else:
@@ -60,7 +62,6 @@ async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> I
 
     prev_callback_data = f'topic_{topic_id}_prev_page' if current_page + 1 > 1 else '#'
     next_callback_data = f'topic_{topic_id}_next_page' if current_page + 1 < number_pages else '#'
-    print(topic)
     if len(topic['subTopics']):
         navigation_buttons = []
     else:
