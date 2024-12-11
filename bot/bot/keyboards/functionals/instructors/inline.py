@@ -44,18 +44,17 @@ async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> I
     topic = await topics_service.get_by_id(topic_id)
     parent_id = topic['parentId']
     parent = await topics_service.get_by_id(parent_id)
-    navigation_buttons = []
     number_pages = len(parent['subTopics'])
     topic_id = parent['subTopics'][current_page - 1]['id']
     if topic['file']:
-        file_topic = topic['file']['path']
+        file_topic_id = topic['file']['id']
     else:
-        file_topic = None
+        file_topic_id = None
 
     buttons = []
 
-    if file_topic:
-        buttons.append([InlineKeyboardButton(text='Посмотреть в общем файле', callback_data=f'topic-file_{file_topic}_{topic_id}')])
+    if file_topic_id:
+        buttons.append([InlineKeyboardButton(text='Посмотреть в общем файле', callback_data=f'topic-file_{file_topic_id}_{topic_id}')])
 
     buttons.append([InlineKeyboardButton(text='Вернуться назад', callback_data=f'topic_{parent_id}')])
 

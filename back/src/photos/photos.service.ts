@@ -10,7 +10,7 @@ export class PhotosService {
         private photoRepository: Repository<Photo>,
     ) {}
 
-    async getFileByName(filename: string): Promise<Photo> {
-        return await this.photoRepository.findOne({ where: { path: filename } });
-    }
+    async getFileById(id: number): Promise<Photo> {
+    return await this.photoRepository.findOne({ where: { id } });
+  }
 }

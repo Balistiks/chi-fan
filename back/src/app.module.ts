@@ -13,7 +13,7 @@ import { Topic } from './topics/entities/topic.entity';
 import { PhotosModule } from './photos/photos.module';
 import { Photo } from './photos/entities/photo.entity';
 import { FilesModule } from './files/files.module';
-import {File} from "./files/entities/file.entity";
+import { File } from './files/entities/file.entity';
 
 @Module({
   imports: [

@@ -8,10 +8,10 @@ import { Response } from 'express';
 export class PhotosController {
   constructor(private readonly photosService: PhotosService) {}
 
-  @Get(':filename')
+  @Get(':id')
   @Header('Content-type', 'image/png')
-  async serveFile(@Param('filename') filename: string, @Res() res: Response) {
-    const photo = await this.photosService.getFileByName(filename);
+  async serveFile(@Param('id') id: number, @Res() res: Response) {
+    const photo = await this.photosService.getFileById(id);
     const fileStream = createReadStream(
       join(process.cwd(), `./files/${photo.path}`),
     );

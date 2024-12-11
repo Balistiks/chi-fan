@@ -71,7 +71,7 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
                 media = types.InputMediaPhoto(
                     media=types.URLInputFile(
                         headers=headers,
-                        url=f"http://back:3000/api/photos/{photo['path']}",
+                        url=f"http://back:3000/api/photos/{photo['id']}",
                         filename=photo['path']
                     )
                 )
@@ -96,28 +96,31 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
             reply_markup=await keyboards.functionals.instructors.instructor_topic_keyboard(topic_id)
 
         )
+    path_file = topic_data['file']['path']
+    await state.update_data(path_file=path_file)
 
 
 @callbacks_router.callback_query(F.data.startswith('topic-file_'))
 async def topic_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
     media_group_ids = data.get('media_group_ids', [])
+    file_path = data['path_file']
 
     callback_data = callback.data
-    path_file = callback_data.split('_')[1]
+    id_file = callback_data.split('_')[1]
     topic_id = callback_data.split('_')[2]
+
 
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     if media_group_ids:
         for media_group_id in media_group_ids:
             await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=media_group_id)
         await state.clear()
-
     await callback.message.answer_document(
         document=types.URLInputFile(
             headers=headers,
-            url=f"http://back:3000/api/files/{path_file}",
-            filename=path_file
+            url=f"http://back:3000/api/files/{id_file}",
+            filename=file_path
         ),
         reply_markup=await keyboards.functionals.instructors.instructor_topic_back_keyboard(topic_id)
     )
