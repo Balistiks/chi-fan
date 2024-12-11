@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {File} from "./entities/file.entity";
+import {Photo} from "../photos/entities/photo.entity";
 
 @Injectable()
 export class FilesService {
@@ -10,7 +11,7 @@ export class FilesService {
         private fileRepository: Repository<File>,
     ) {}
 
-    async getFileByName(filename: string): Promise<File | undefined> {
-    return this.fileRepository.findOne({ where: { path: filename } });
+    async getFileById(id: number): Promise<File> {
+    return await this.fileRepository.findOne({ where: { id } });
   }
 }
