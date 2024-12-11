@@ -43,11 +43,9 @@ async def instructor_topic_keyboard(topic_id: int) -> InlineKeyboardMarkup:
 async def instructor_topic_menu_keyboard(topic_id: int, current_page: int,) -> InlineKeyboardMarkup:
     topic = await topics_service.get_by_id(topic_id)
     parent_id = topic['parentId']
-    parent = await topics_service.get_by_id(parent_id)
     text = topic['text']
     text_parts = text.split('#')
     number_pages = len(text_parts)
-    # topic_id = parent['subTopics'][current_page - 1]['id']
     if topic['file']:
         file_topic_id = topic['file']['id']
     else:
