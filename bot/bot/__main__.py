@@ -2,7 +2,10 @@ import asyncio
 import logging
 import sys
 
+from openai import OpenAI
+
 from aiogram import Bot
+
 
 from redis.asyncio.client import Redis
 
@@ -22,11 +25,14 @@ async def start_bot():
             port=conf.redis.port,
         )
     )
+    openai_client = OpenAI(api_key=conf.openai.api_key)
+
     dp = get_dispatcher(storage=storage)
 
     await dp.start_polling(
         bot,
         allowed_updates=dp.resolve_used_update_types(),
+        openai_client=openai_client
     )
 
 
