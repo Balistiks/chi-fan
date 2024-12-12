@@ -49,6 +49,13 @@ class BotConfig:
     token: str = getenv("BOT_TOKEN")
     secret_token: str = getenv("SECRET_TOKEN")
 
+@dataclass
+class OpenAIConfig:
+    """OpenAI configuration"""
+
+    api_key: str = getenv("OPENAI_API_KEY")
+    assistant_id: str = getenv("OPENAI_ASSISTANT_ID")
+
 
 @dataclass
 class Configuration:
@@ -59,6 +66,7 @@ class Configuration:
     db = DatabaseConfig()
     redis = RedisConfig()
     bot = BotConfig()
+    openai = OpenAIConfig()
 
 
 conf = Configuration()
