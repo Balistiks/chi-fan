@@ -12,7 +12,7 @@ async def main_menu(tgId: int) -> InlineKeyboardMarkup:
         button = InlineKeyboardButton(text=functional['name'], callback_data=functional['callbackData'])
         buttons.append([button])
 
-    buttons.append(InlineKeyboardButton(text='Задать вопрос', callback_data='question'))
+    buttons.append([InlineKeyboardButton(text='Задать вопрос', callback_data='question')])
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
