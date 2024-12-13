@@ -12,10 +12,10 @@ async def main_menu(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
     await state.clear()
 
-    if data.get('delete') == 'delete':
-        await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
-    else:
+    if data.get('delete') == 'not delete':
         await callback.message.edit_reply_markup(reply_markup=None)
+    else:
+        await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
     await callback.message.answer(
     text='Привет! Мы рады приветствовать тебя в команде <b>Чи-Фань</b> 🎉\n\n'
