@@ -8,6 +8,9 @@ import { TopicsModule } from './topics/topics.module';
 import { PhotosModule } from './photos/photos.module';
 import { FilesModule } from './files/files.module';
 import { dataSourceOptions } from '../db/data-source';
+import { PointsModule } from './points/points.module';
+import { EmployeesModule } from './employees/employees.module';
+import { ShiftsModule } from './shifts/shifts.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { dataSourceOptions } from '../db/data-source';
     TopicsModule,
     PhotosModule,
     FilesModule,
+    PointsModule,
+    EmployeesModule,
+    ShiftsModule,
   ],
   controllers: [],
   providers: [],
