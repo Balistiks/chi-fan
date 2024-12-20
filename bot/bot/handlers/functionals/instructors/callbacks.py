@@ -27,8 +27,9 @@ async def instructors(callback: types.CallbackQuery, bot: Bot, state: FSMContext
             await callback.message.bot.delete_message(chat_id=callback.message.chat.id, message_id=media_group_id)
         await state.clear()
 
-    await callback.message.answer(
-        text='Здесь вы найдете инструкции для работы 📚\n\n'
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Инструкции и регламенты.png'),
+        caption='Здесь вы найдете инструкции для работы 📚\n\n'
              'Вы можете просмотреть их в виде удобного набора картинок или открыть полный файл для более детального изучения.\n\n'
              'Приятной работы 😊',
         reply_markup=await keyboards.functionals.instructors.instructor_keyboard()
@@ -99,8 +100,8 @@ async def topic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
         )
     elif topic_data['subTopics']:
         await state.clear()
-        await callback.message.answer(
-            text='Инструкции',
+        await callback.message.answer_photo(
+            photo=types.FSInputFile('./files/Инструкции и регламенты.png'),
             reply_markup=await keyboards.functionals.instructors.instructor_topic_keyboard(topic_id)
         )
 

@@ -16,8 +16,9 @@ async def adaptation(callback: types.CallbackQuery, state: FSMContext, openai_cl
     await state.set_state(GPTState.gpt)
     await callback.message.delete()
 
-    previous_message = await callback.message.answer(
-        text='Задайте вопрос\n'
+    previous_message = await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Заставка стартового экрана.png'),
+        caption='Задайте вопрос\n'
              '\nПримеры:\n'
              '- Как собрать заказ?\n'
              '- Что делать со злым гостем?\n'
