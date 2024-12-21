@@ -14,8 +14,9 @@ callbacks_router = Router()
 @callbacks_router.callback_query(F.data == 'salary')
 async def salary(callback: types.CallbackQuery, bot: Bot):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await callback.message.answer(
-        text='Выбери месяц, чтобы узнать подробности 📅\n\n'
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Зарплаты.png'),
+        caption='Выбери месяц, чтобы узнать подробности 📅\n\n'
              'После этого ты сможешь детально изучить информацию о своей зарплате 💰',
         reply_markup=keyboards.functionals.salary.SALARY_MOUNTHS_KEYBOARD
     )
@@ -27,8 +28,9 @@ async def salary_detailing(callback: types.CallbackQuery, bot: Bot, state: FSMCo
     await state.update_data(mounth=mounth)
 
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await callback.message.answer(
-        text='Зарплата — это всегда приятный момент! А у нас всё чётко и вовремя:\n\n'
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Детализация зарплат.png'),
+        caption='Зарплата — это всегда приятный момент! А у нас всё чётко и вовремя:\n\n'
              '<b>- За первую половину месяца (1–15 числа)</b> — деньги на карте уже <b>20 числа</>.\n'
              '<b>- За вторую половину (16–30/31 числа)</b> — ждите пополнения <b>5 числа</b>.\n\n'
              'Планируйте свои траты, а о выплатах мы позаботимся 💼',
@@ -42,8 +44,8 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
     data = await state.get_data()
     mounth = data['mounth']
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await callback.message.answer(
-        text='Детализация по точкам',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Детализация по точкам.png'),
         reply_markup=await keyboards.functionals.salary.salary_points_keyboard(test, mounth)
     )
 
@@ -81,8 +83,9 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
             for date, salary in item['daily_salary'].items():
                 analytics_text += f"{date} | {item['name']:<11} | {salary:<5}\n"
 
-    await callback.message.answer(
-        text=analytics_text,
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Детализация по дням.png'),
+        caption=analytics_text,
         parse_mode='HTML',
         reply_markup=keyboards.functionals.salary.BACK_DETAILING_BY_DAYS_KEYBOARD
     )
