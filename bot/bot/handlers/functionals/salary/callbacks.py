@@ -58,9 +58,8 @@ async def salary_point(callback: types.CallbackQuery, bot: Bot):
             data = test_item
             break
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/chatademia.png'),
-        caption='<b>Итоги по вашим выплатам на этой точке:</b> \n\n'
+    await callback.message.answer(
+        text='<b>Итоги по вашим выплатам на этой точке:</b> \n\n'
                 f'<b>С 1 по 15 число</b> вы заработали:\n👉 {data['salary']}\n'
                 f'<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n👉 {data['salary']}\n\n'
                 'Ваш труд ценен, а заработанное — заслуженно ваше! 🚀🔥',
