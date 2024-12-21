@@ -1,5 +1,11 @@
+import {Calendar} from "../../../widgets/calendar";
+
 const IndexPage = () => {
-  return <h1>Hello</h1>
+  return (
+    <>
+      <Calendar />
+    </>
+  )
 }
 
 export default IndexPage;

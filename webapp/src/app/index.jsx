@@ -4,6 +4,8 @@ import {createBrowserRouter, RouterProvider} from "react-router";
 import {IndexPage} from "../pages/index-page";
 import './styles/normalizez.scss'
 import './styles/reset.scss'
+import './styles/fonts.scss'
+import {Header} from "../widgets/header";
 
 const router = createBrowserRouter([
   {
@@ -15,6 +17,7 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
+      <Header />
       <Suspense fallback={<p>Загрузка...</p>}>
         <RouterProvider router={router} />
       </Suspense>
