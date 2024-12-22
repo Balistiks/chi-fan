@@ -2,6 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Functional } from '../functionals/entities/functional.entity';
 import { FunctionalsService } from '../functionals/functionals.service';
+import {User} from "./entities/user.entity";
 
 @Controller('users')
 export class UsersController {

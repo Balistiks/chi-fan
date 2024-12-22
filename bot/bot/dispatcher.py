@@ -5,7 +5,11 @@ from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from bot.handlers import routers
+
+from bot.middlewares import SchedulerMiddleware
 
 from bot.misc.configuration import conf
 
@@ -19,6 +23,7 @@ def get_redis_storage(
 def get_dispatcher(
     storage: BaseStorage = MemoryStorage(),
     event_isolation: BaseEventIsolation | None = None,
+    scheduler: AsyncIOScheduler = None
 ):
     """This function set up dispatcher with routers, filters and middlewares."""
     dp = Dispatcher(
@@ -29,5 +34,6 @@ def get_dispatcher(
         dp.include_router(router)
 
     # Register middlewares
+    dp.update.middleware.register(SchedulerMiddleware(scheduler=scheduler, storage=storage))
 
     return dp
