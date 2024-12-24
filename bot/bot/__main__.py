@@ -2,12 +2,16 @@ import asyncio
 import logging
 import sys
 
-from openai import OpenAI
-
 from aiogram import Bot
-
+from aiogram.fsm.context import FSMContext
 
 from redis.asyncio.client import Redis
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.jobstores.redis import RedisJobStore
+from apscheduler_di import ContextSchedulerDecorator
+
+from bot.scheduler import schedule_opening_shift, schedule_closing_shift
 
 from bot.misc.configuration import conf
 
@@ -25,14 +29,39 @@ async def start_bot():
             port=conf.redis.port,
         )
     )
-    openai_client = OpenAI(api_key=conf.openai.api_key)
+    job_stores = {
+        'default': RedisJobStore(
+            jobs_key='dispatched_trips_jobs',
+            run_times_key='dispatched_trips_running',
+            host=conf.redis.host,
+            port=conf.redis.port,
+            password=conf.redis.passwd,
+        )}
+    scheduler = ContextSchedulerDecorator(AsyncIOScheduler(jobstores=job_stores))
+    scheduler.ctx.add_instance(bot, declared_class=Bot)
 
-    dp = get_dispatcher(storage=storage)
+    dp = get_dispatcher(storage=storage, scheduler=scheduler)
+    scheduler_static = AsyncIOScheduler(timezone='Asia/Vladivostok')
+    scheduler_static.add_job(
+        schedule_opening_shift,
 
+        trigger='cron',
+        day='*',
+        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+    )
+    scheduler_static.add_job(
+        schedule_closing_shift,
+        trigger='cron',
+        day='*',
+        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+    )
+
+
+    scheduler.start()
+    scheduler_static.start()
     await dp.start_polling(
         bot,
         allowed_updates=dp.resolve_used_update_types(),
-        openai_client=openai_client
     )
 
 

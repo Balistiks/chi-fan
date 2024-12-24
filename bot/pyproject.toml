@@ -12,6 +12,9 @@ redis = "^5.0.4"
 sqlalchemy = "^2.0.30"
 aiohttp = "^3.9.5"
 openai = "^1.57.2"
+apscheduler = "^3.11.0"
+apscheduler-di = "^0.1.0"
+six = "^1.17.0"
 
 
 [build-system]
