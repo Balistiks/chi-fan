@@ -6,7 +6,7 @@ services:
     restart: always
     volumes:
       - './conf/nginx:/etc/nginx'
-      - './webapp/dist:/var/www/html'
+      - './webapp/build:/var/www/html'
       - './certbot/conf:/etc/letsencrypt'
       - './certbot/www:/var/www/certbot'
     networks:
