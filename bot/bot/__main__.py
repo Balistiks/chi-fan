@@ -42,8 +42,19 @@ async def start_bot():
 
     dp = get_dispatcher(storage=storage, scheduler=scheduler)
     scheduler_static = AsyncIOScheduler(timezone='Asia/Vladivostok')
-    scheduler_static.add_job(schedule_opening_shift, trigger='cron', day='*', kwargs={'bot': bot, 'apscheduler': scheduler_static, 'storage': storage})
-    scheduler_static.add_job(schedule_closing_shift, trigger='cron', day='*', kwargs={'bot': bot, 'apscheduler': scheduler_static, 'storage': storage})
+    scheduler_static.add_job(
+        schedule_opening_shift,
+
+        trigger='cron',
+        day='*',
+        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+    )
+    scheduler_static.add_job(
+        schedule_closing_shift,
+        trigger='cron',
+        day='*',
+        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+    )
 
 
     scheduler.start()
