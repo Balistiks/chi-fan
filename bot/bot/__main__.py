@@ -46,13 +46,13 @@ async def start_bot():
         schedule_opening_shift,
         trigger='cron',
         minute='*',
-        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+        kwargs={'bot': bot, 'apscheduler': scheduler_static, 'storage': storage}
     )
     scheduler_static.add_job(
         schedule_closing_shift,
         trigger='cron',
         minute='*',
-        kwargs={'bot': bot, 'apscheduler': scheduler, 'storage': storage}
+        kwargs={'bot': bot, 'apscheduler': scheduler_static, 'storage': storage}
     )
 
 
