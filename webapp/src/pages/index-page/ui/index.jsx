@@ -1,5 +1,3 @@
-import Calendar from 'react-calendar';
-import './calendar.css'
 import styles from './styles.module.scss'
 import TextModal from "../../../widgets/text-modal/ui";
 import {useState} from "react";
@@ -7,6 +5,7 @@ import {Header} from "../../../widgets/header";
 import {Button} from "../../../widgets/button";
 import SwitchModal from "../../../widgets/switch-modal/ui";
 import axios from "axios";
+import {CalendarWidget} from "../../../widgets/calendar-widget";
 
 const dates = [
   new Date(2024, 11, 1),
@@ -46,26 +45,20 @@ const IndexPage = () => {
   return (
     <div className={styles.indexPage}>
       <Header>{isSwitch ? 'Выберите день' : 'Ваши смены'}</Header>
-      <div className={styles.calendarHandler}>
-        <Calendar
-          onChange={null}
-          onClickMonth={null}
-          minDetail={'month'}
-          nextLabel={<img src={'/icons/arrow right.svg'} alt={'arrow right'}/>}
-          prevLabel={<img src={'/icons/arrow left.svg'} alt={'arrow left'}/>}
-          onClickDay={(value) => isSwitch ? openSwitchModal(value) : openShiftModal(value)}
-          tileClassName={({ date }) =>
-            !!dates.find((item) => item.getTime() === date.getTime()) ? styles.day : null}
-        />
-        { textModalOpen && <TextModal setModalOpen={setTextModalOpen}>
-          {elementForTextModal}
-        </TextModal>}
-      </div>
+      <CalendarWidget
+        className={styles.calendarHandler}
+        onClickDay={(value) => isSwitch ? openSwitchModal(value) : openShiftModal(value)}
+        tileClassName={({date}) =>
+          !!dates.find((item) => item.getTime() === date.getTime()) ? styles.day : null}
+      />
       <Button
         onClick={() => isSwitch ? setIsSwitch(false) : setIsSwitch(true)}
       >
         {isSwitch ? 'мои смены' : 'подмениться'}
       </Button>
+      { textModalOpen && <TextModal setModalOpen={setTextModalOpen}>
+        {elementForTextModal}
+      </TextModal>}
       { switchModalOpen && <SwitchModal onClickEmployee={onClickEmployee} setModalOpen={setSwitchModalOpen}  date={date}/> }
     </div>
   )
