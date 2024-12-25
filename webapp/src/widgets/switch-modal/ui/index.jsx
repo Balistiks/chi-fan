@@ -1,6 +1,6 @@
 import styles from './styles.module.scss'
 import Employee from "../../../entities/employee/ui";
-const SwitchModal = ({setModalOpen, date}) => {
+const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
   return (
     <>
       <div className={styles.darkBg} onClick={() => setModalOpen(false)}/>
@@ -11,14 +11,14 @@ const SwitchModal = ({setModalOpen, date}) => {
             <p>Выберите коллегу</p>
           </div>
           <div className={styles.employees}>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
-            <Employee className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
           </div>
           <div className={styles.exit} onClick={() => setModalOpen(false)}>
             <img src={'/icons/exit.svg'} alt="exit"/>

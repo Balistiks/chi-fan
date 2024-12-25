@@ -1,12 +1,12 @@
 import styles from './styles.module.scss';
 
-const ShiftDayModal = ({setModalOpen}) => {
+const TextModal = ({setModalOpen, children}) => {
   return (
     <>
       <div className={styles.darkBg} onClick={() => setModalOpen(false)}/>
       <div className={styles.centered}>
         <div className={styles.modal}>
-          <p>Часы работы: 12:00 - 00:00<br/>Точка: Тихая</p>
+          {children}
           <div className={styles.exit} onClick={() => setModalOpen(false)}>
             <img src={'/icons/exit.svg'} alt="exit"/>
           </div>
@@ -16,4 +16,4 @@ const ShiftDayModal = ({setModalOpen}) => {
   )
 }
 
-export default ShiftDayModal;
+export default TextModal;

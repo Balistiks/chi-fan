@@ -1,7 +1,7 @@
 import Calendar from 'react-calendar';
 import './calendar.css'
 import styles from './styles.module.scss'
-import ShiftDayModal from "../../../widgets/shift-day-modal/ui";
+import TextModal from "../../../widgets/text-modal/ui";
 import {useState} from "react";
 import {Header} from "../../../widgets/header";
 import {Button} from "../../../widgets/button";
@@ -16,14 +16,16 @@ const dates = [
 
 const IndexPage = () => {
   const [date, setDate] = useState(new Date());
-  const [shiftModalOpen, setShiftModalOpen] = useState(false)
+  const [textModalOpen, setTextModalOpen] = useState(false)
   const [isSwitch, setIsSwitch] = useState(false);
   const [switchModalOpen, setSwitchModalOpen] = useState(false)
+  const [elementForTextModal, setElementForTextModal] = useState(<></>);
 
   const openShiftModal = (value) => {
     if (!!dates.find((item) => item.getTime() === value.getTime())) {
       setDate(value)
-      setShiftModalOpen(true)
+      setElementForTextModal(<p>Часы работы: 12:00 - 00:00<br/>Точка: Тихая</p>)
+      setTextModalOpen(true)
     }
   }
 
@@ -32,6 +34,12 @@ const IndexPage = () => {
       setDate(value)
       setSwitchModalOpen(true)
     }
+  }
+
+  const onClickEmployee = () => {
+    setSwitchModalOpen(false)
+    setElementForTextModal(<p style={{ textAlign: "center" }}>Запрос отправлен! Об ответе оповестим в чате с ботом 🔥</p>)
+    setTextModalOpen(true)
   }
 
   return (
@@ -48,14 +56,16 @@ const IndexPage = () => {
           tileClassName={({ date }) =>
             !!dates.find((item) => item.getTime() === date.getTime()) ? styles.day : null}
         />
-        { shiftModalOpen && <ShiftDayModal setModalOpen={setShiftModalOpen} /> }
+        { textModalOpen && <TextModal setModalOpen={setTextModalOpen}>
+          {elementForTextModal}
+        </TextModal>}
       </div>
       <Button
         onClick={() => isSwitch ? setIsSwitch(false) : setIsSwitch(true)}
       >
         {isSwitch ? 'мои смены' : 'подмениться'}
       </Button>
-      { switchModalOpen && <SwitchModal setModalOpen={setSwitchModalOpen}  date={date}/> }
+      { switchModalOpen && <SwitchModal onClickEmployee={onClickEmployee} setModalOpen={setSwitchModalOpen}  date={date}/> }
     </div>
   )
 }
