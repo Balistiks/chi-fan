@@ -12,6 +12,7 @@ import { PointsModule } from './points/points.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CheckListsModule } from './check_lists/check_lists.module';
+import { CheckListAnswersModule } from './check_list-answers/check_list-answers.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CheckListsModule } from './check_lists/check_lists.module';
     EmployeesModule,
     ShiftsModule,
     CheckListsModule,
+    CheckListAnswersModule,
   ],
   controllers: [],
   providers: [],

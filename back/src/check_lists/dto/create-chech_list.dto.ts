@@ -7,9 +7,5 @@ export class CreateCheckListDto {
     name: string;
 
     @IsNotEmpty()
-    @IsBoolean()
-    done: boolean;
-
-    @IsNotEmpty()
     point: Point;
 }

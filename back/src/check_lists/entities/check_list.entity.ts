@@ -8,8 +8,8 @@ import {
     OneToOne,
     PrimaryGeneratedColumn
 } from 'typeorm';
-import {Photo} from "../../photos/entities/photo.entity";
 import {Point} from "../../points/entities/point.entity";
+import {Check_listAnswer} from "../../check_list-answers/entities/check_list-answer.entity";
 
 @Entity()
 export class Check_list {
@@ -19,16 +19,12 @@ export class Check_list {
     @Column({ nullable: false })
     name: string;
 
-    @Column("boolean", { nullable: false, default: false })
-    done: boolean;
-
     @CreateDateColumn()
     createdAt: Date;
 
     @ManyToOne(() => Point, (point: Point) => point.check_lists)
     point: Point;
 
-    @OneToOne(() => Photo, (photo) => photo.check_list)
-    @JoinColumn()
-    photo: Photo;
+    @OneToMany(() => Check_listAnswer, (check_listAnswer: Check_listAnswer) => check_listAnswer.check_list)
+    check_list_answers: Check_listAnswer[];
 }

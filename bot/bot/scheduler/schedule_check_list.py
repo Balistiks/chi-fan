@@ -4,7 +4,7 @@ from aiogram import Bot, types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 
-from bot.services import points_service
+from bot.services import points_service, check_lists_service
 from bot import keyboards
 
 
@@ -92,8 +92,11 @@ async def send_opening_shift(bot: Bot, tgId: int, pointId, storage):
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие', pointId=pointId)
-
+    check_list = await check_lists_service.create({
+        'name': 'Чек-лист - открытие',
+        'point': pointId,
+    })
+    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие', pointId=pointId, check_list_id=check_list['id'])
     await bot.send_message(
         chat_id=tgId,
         text='Чек-лист - открытие',
@@ -125,7 +128,11 @@ async def send_closing_shift(bot: Bot, tgId: int, pointId, storage):
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие', pointId=pointId)
+    check_list = await check_lists_service.create({
+        'name': 'Чек-лист - закрытие',
+        'point': pointId,
+    })
+    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие', pointId=pointId, check_list_id=check_list['id'])
 
     await bot.send_message(
         chat_id=tgId,
