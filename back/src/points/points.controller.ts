@@ -20,14 +20,17 @@ export class PointsController {
   ): Promise<Point> {
     const point = await this.pointsService.findOne({
       where: { id },
-      relations: ['check_lists', 'check_lists.photo'],
+      relations: ['check_lists', 'check_lists.check_list_answers', 'check_lists.check_list_answers.photo'],
     });
 
-    point.check_lists = point.check_lists.filter(checkList =>
-        new Date(checkList.createdAt).getMonth() + 1 === month
-    );
+    point.check_lists = point.check_lists
+        .filter(checkList =>
+            new Date(checkList.createdAt).getMonth() + 1 === month
+        )
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return point;
   }
+
 
 }

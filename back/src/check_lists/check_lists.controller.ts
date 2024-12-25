@@ -1,4 +1,4 @@
-import {Body, Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {CheckListsService} from "./check_lists.service";
 import {PhotosService} from "../photos/photos.service";
 import {FileInterceptor} from "@nestjs/platform-express";
@@ -16,5 +16,15 @@ export class CheckListsController {
     @Post()
     async create(@Body() check_list: CreateCheckListDto): Promise<Check_list> {
         return await this.checkListsService.save(check_list);
+    }
+
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Check_list> {
+        return await this.checkListsService.findOne(
+            {
+                where : { id },
+                relations: ['check_list_answers', 'check_list_answers.photo']
+            }
+        )
     }
 }

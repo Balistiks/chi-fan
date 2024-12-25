@@ -96,3 +96,52 @@ async def date_point_keyboard(points: dict, current_page: int) -> InlineKeyboard
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
+
+async def back_keyboard(check_list_id: int) -> InlineKeyboardMarkup:
+    buttons = []
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'point-{check_list_id}')])
+
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
+async def check_list_keyboard(check_list: dict, current_page: int) -> InlineKeyboardMarkup:
+    check_list_answers = check_list.get("check_list_answers", [])
+    total_pages = math.ceil(len(check_list_answers) / 6)
+
+    start_index = current_page * 6
+    end_index = start_index + 6
+    end_index = min(end_index, len(check_list_answers))
+
+    buttons = []
+
+    for index in range(start_index, end_index):
+        answer = check_list_answers[index]
+        text = answer.get("text")
+        callback_data = f'point_answer-{answer["id"]}'
+        buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
+
+    prev_callback_data = f'point-answer-prev_page_{current_page - 1}' if current_page > 0 else '#'
+    next_callback_data = f'point-answer-next_page_{current_page + 1}' if current_page < total_pages - 1 else '#'
+
+    navigation_buttons = [
+        InlineKeyboardButton(text='⬅️', callback_data=prev_callback_data),
+        InlineKeyboardButton(text=f'{current_page + 1}/{total_pages}', callback_data='#'),
+        InlineKeyboardButton(text='➡️', callback_data=next_callback_data)
+    ]
+
+    buttons.append(navigation_buttons)
+    buttons.append([InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu')])
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
+BACK_KEYBOARD  = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Вернуться назад', callback_data=''),
+        ]
+    ]
+)

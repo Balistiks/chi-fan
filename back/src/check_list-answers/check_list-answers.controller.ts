@@ -1,4 +1,4 @@
-import {Body, Controller, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors} from '@nestjs/common';
 import {PhotosService} from "../photos/photos.service";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {diskStorage} from "multer";
@@ -42,5 +42,13 @@ export class CheckListAnswersController {
             await this.photosService.save(newPhoto);
         }
         return newCheckListAnswer;
+    }
+
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Check_listAnswer> {
+        return await this.checkListAnswersService.findOne({
+            where: { id },
+            relations: ['photo']
+        })
     }
 }
