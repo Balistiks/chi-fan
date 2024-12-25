@@ -42,8 +42,6 @@ async def check_list_get_mouth(callback: types.CallbackQuery, bot: Bot, state: F
     points = await points_service.get_by_id_and_mouth(data['point_id'], int(mouth))
     await state.update_data(points=points)
 
-    # await state.update_data(mouth=mouth)
-
     await callback.message.answer(
         text='Выберите дату',
         reply_markup=await keyboards.functionals.check_list.date_point_keyboard(points, 0)
