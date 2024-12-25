@@ -75,24 +75,24 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
         time = point['opening']
         time_obj = datetime.strptime(time, "%H:%M:%S").time()
         datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-        new_time = datetime_obj - timedelta(minutes=30)
+        new_time = datetime_obj - timedelta(minutes=0)
 
         apscheduler.add_job(
             send_opening_shift,
             'date',
             run_date=new_time,
-            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'storage': storage},
+            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'pointId': point['id'], 'storage': storage},
             id=str(point['user']['tgId']),
             replace_existing=True
         )
 
 
-async def send_opening_shift(bot: Bot, tgId: int, storage):
+async def send_opening_shift(bot: Bot, tgId: int, pointId, storage):
     state = FSMContext(
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие')
+    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие', pointId=pointId)
 
     await bot.send_message(
         chat_id=tgId,
@@ -114,18 +114,18 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
             send_closing_shift,
             'date',
             run_date=new_time,
-            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'storage': storage},
+            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'pointId': point['id'], 'storage': storage},
             id=point['user']['tgId'],
             replace_existing=True
         )
 
 
-async def send_closing_shift(bot: Bot, tgId: int, storage):
+async def send_closing_shift(bot: Bot, tgId: int, pointId, storage):
     state = FSMContext(
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие')
+    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие', pointId=pointId)
 
     await bot.send_message(
         chat_id=tgId,

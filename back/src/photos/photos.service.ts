@@ -13,4 +13,9 @@ export class PhotosService {
     async getFileById(id: number): Promise<Photo> {
     return await this.photoRepository.findOne({ where: { id } });
   }
+
+    async save(photo: Photo): Promise<Photo> {
+        return await this.photoRepository.save(photo);
+    }
+
 }

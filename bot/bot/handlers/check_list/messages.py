@@ -15,6 +15,7 @@ async def get_check_list_photo(message: types.Message, state: FSMContext):
     await functions.delete_message(message.bot, message.chat.id, message.message_id)
     if message.photo:
         largest_photo = message.photo[-1]
+        await state.update_data(photo=largest_photo.file_id)
         await message.answer_photo(
             photo=largest_photo.file_id,
             caption='Подтвердите фотографию или прикрепите другую',

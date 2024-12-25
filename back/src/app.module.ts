@@ -11,6 +11,7 @@ import { dataSourceOptions } from '../db/data-source';
 import { PointsModule } from './points/points.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
+import { CheckListsModule } from './check_lists/check_lists.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ShiftsModule } from './shifts/shifts.module';
     PointsModule,
     EmployeesModule,
     ShiftsModule,
+    CheckListsModule,
   ],
   controllers: [],
   providers: [],
