@@ -11,14 +11,14 @@ const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
             <p>Выберите коллегу</p>
           </div>
           <div className={styles.employees}>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
-            <Employee onClick={() => onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
+            <Employee onClick={async () => await onClickEmployee()} className={styles.employee} width={'100%'} height={28}/>
           </div>
           <div className={styles.exit} onClick={() => setModalOpen(false)}>
             <img src={'/icons/exit.svg'} alt="exit"/>

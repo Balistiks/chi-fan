@@ -6,6 +6,7 @@ import {useState} from "react";
 import {Header} from "../../../widgets/header";
 import {Button} from "../../../widgets/button";
 import SwitchModal from "../../../widgets/switch-modal/ui";
+import axios from "axios";
 
 const dates = [
   new Date(2024, 11, 1),
@@ -36,7 +37,7 @@ const IndexPage = () => {
     }
   }
 
-  const onClickEmployee = () => {
+  const onClickEmployee = async () => {
     setSwitchModalOpen(false)
     setElementForTextModal(<p style={{ textAlign: "center" }}>Запрос отправлен! Об ответе оповестим в чате с ботом 🔥</p>)
     setTextModalOpen(true)
