@@ -12,6 +12,8 @@ async def main_menu(tgId: int) -> InlineKeyboardMarkup:
     for functional in functionals:
         if functional['name'] == 'Мои смены':
             button = InlineKeyboardButton(text=functional['name'], web_app=WebAppInfo(url='https://chifan-corp.ru'))
+        elif functional['name'] == 'Выбрать подработку':
+            button = InlineKeyboardButton(text=functional['name'], web_app=WebAppInfo(url='https://chifan-corp.ru/part-time-work'))
         else:
             button = InlineKeyboardButton(text=functional['name'], callback_data=functional['callbackData'])
         buttons.append([button])
