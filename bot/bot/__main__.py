@@ -3,7 +3,8 @@ import logging
 import sys
 
 from aiogram import Bot
-from aiogram.fsm.context import FSMContext
+from openai import OpenAI
+
 
 from redis.asyncio.client import Redis
 
@@ -29,6 +30,8 @@ async def start_bot():
             port=conf.redis.port,
         )
     )
+    openai_client = OpenAI(api_key=conf.openai.api_key)
+
     job_stores = {
         'default': RedisJobStore(
             jobs_key='dispatched_trips_jobs',
@@ -61,6 +64,7 @@ async def start_bot():
     await dp.start_polling(
         bot,
         allowed_updates=dp.resolve_used_update_types(),
+        openai_client=openai_client
     )
 
 
