@@ -38,7 +38,7 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
     )
 
 
-@callbacks_router.callback_query(F.data == 'morning_recount')
+@callbacks_router.callback_query(F.data == 'recount')
 async def morning_recount(callback: types.CallbackQuery, bot: Bot):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer(
@@ -50,7 +50,7 @@ async def morning_recount(callback: types.CallbackQuery, bot: Bot):
 @callbacks_router.callback_query(F.data == 'attach_photo')
 async def attach_photo(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await state.set_state(CashReportState.morning_recount)
+    await state.set_state(CashReportState.recount)
     await state.update_data(type='фото')
     message = await callback.message.answer(
         text='Прикрепите фото'
@@ -61,7 +61,7 @@ async def attach_photo(callback: types.CallbackQuery, bot: Bot, state: FSMContex
 @callbacks_router.callback_query(F.data == 'attach_file')
 async def attach_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await state.set_state(CashReportState.morning_recount)
+    await state.set_state(CashReportState.recount)
     await state.update_data(type='файл')
     message = await callback.message.answer(
         text='Прикрепите файл'
@@ -69,14 +69,15 @@ async def attach_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext
     await state.update_data(last_message_id=message.message_id)
 
 
-@callbacks_router.callback_query(F.data == 'money_begin')
-async def money_begin(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+@callbacks_router.callback_query(F.data.startswith('enter_sum:'))
+async def enter_sum(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await state.set_state(CashReportState.money_begin)
+    await state.set_state(CashReportState.enter_sum)
+    data_callback = callback.data.split(':')[1]
     message = await callback.message.answer(
         text='Введите сумму'
     )
-    await state.update_data(last_message_id=message.message_id)
+    await state.update_data(last_message_id=message.message_id, data_cash=data_callback)
 
 
 @callbacks_router.callback_query(F.data == 'collected_fullname')

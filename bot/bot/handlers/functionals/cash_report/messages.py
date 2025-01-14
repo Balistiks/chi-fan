@@ -10,7 +10,7 @@ from bot import keyboards
 messages_router = Router()
 
 
-@messages_router.message(CashReportState.morning_recount)
+@messages_router.message(CashReportState.recount)
 async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContext):
     data = await state.get_data()
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
@@ -27,14 +27,14 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:
-        await state.set_state(CashReportState.morning_recount)
+        await state.set_state(CashReportState.recount)
         message = await message.answer(
             text=f'Прикрепите {data['type']}'
         )
         await state.update_data(last_message_id=message.message_id)
 
 
-@messages_router.message(CashReportState.money_begin)
+@messages_router.message(CashReportState.enter_sum)
 async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext):
     data = await state.get_data()
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
@@ -45,7 +45,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext):
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:
-        await state.set_state(CashReportState.money_begin)
+        await state.set_state(CashReportState.enter_sum)
         message = await message.answer(
             text='Введите сумму'
         )

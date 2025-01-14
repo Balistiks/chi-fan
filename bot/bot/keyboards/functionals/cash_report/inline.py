@@ -7,11 +7,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 data_cash_report_keyboard = [
     {
         'name': 'Утренний пересчет 📷',
-        'callback': 'morning_recount'
+        'callback': 'recount'
     },
     {
         'name': 'Денег на начало дня',
-        'callback': 'money_begin'
+        'callback': 'enter_sum:Денег на начало дня'
     },
     {
         'name': 'Приход',
@@ -19,7 +19,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Инкассация (сумма)',
-        'callback': 'collection_amount'
+        'callback': 'enter_sum:Инкассация (сумма)'
     },
     {
         'name': 'Инкассировал (ФИО)',
@@ -27,47 +27,43 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Сверка итогов',
-        'callback': 'reconciliation_results'
+        'callback': 'enter_sum:Сверка итогов'
     },
     {
         'name': 'Сверка итогов по QR',
-        'callback': 'reconciliation_results_QR'
+        'callback': 'enter_sum:Сверка итогов по QR'
     },
     {
         'name': 'Сумма доставки Яндекс',
-        'callback': 'yandex_delivery_sum'
+        'callback': 'enter_sum:Сумма доставки Яндек'
     },
     {
         'name': 'Итого чек',
-        'callback': 'total_check'
+        'callback': 'enter_sum:Итого чек'
     },
     {
         'name': 'Количество заказов',
-        'callback': 'number_orders'
+        'callback': 'enter_sum:Количество заказов'
     },
     {
         'name': 'Денег на конец дня (факт)',
-        'callback': 'money_end_day'
+        'callback': 'enter_sum:Денег на конец дня (факт)'
     },
     {
         'name': 'Вечерний пересчет 📷',
-        'callback': 'evening_recount'
+        'callback': 'enter_sum:Вечерний пересчет 📷'
     },
     {
         'name': 'Заказы с приложения (online)',
-        'callback': 'orders_application'
+        'callback': 'enter_sum:Заказы с приложения (online)'
     },
     {
         'name': 'Бонусы с приложения',
-        'callback': 'bonuses_application'
+        'callback': 'enter_sum:Бонусы с приложения'
     },
     {
-        'name': 'Чеки (pdf файл)',
-        'callback': 'checks_pdf'
-    },
-    {
-        'name': 'Чеки расходов 📷',
-        'callback': 'expense_receipts'
+        'name': 'Чеки (pdf файл) 📸',
+        'callback': 'recount'
     },
 ]
 

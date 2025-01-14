@@ -2,6 +2,6 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 class CashReportState(StatesGroup):
-    morning_recount = State()
-    money_begin = State()
+    recount = State()
+    enter_sum = State()
     collected_fullname = State()
