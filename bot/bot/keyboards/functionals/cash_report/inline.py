@@ -7,11 +7,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 data_cash_report_keyboard = [
     {
         'name': 'Утренний пересчет 📷',
-        'callback': 'recount'
+        'callback': '#'
     },
     {
         'name': 'Денег на начало дня',
-        'callback': 'enter_sum:Денег на начало дня'
+        'callback': 'enter_sum:C'
     },
     {
         'name': 'Приход',
@@ -19,7 +19,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Инкассация (сумма)',
-        'callback': 'enter_sum:Инкассация (сумма)'
+        'callback': 'enter_sum:E'
     },
     {
         'name': 'Инкассировал (ФИО)',
@@ -27,44 +27,48 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Сверка итогов',
-        'callback': 'enter_sum:Сверка итогов'
+        'callback': 'enter_sum:G'
     },
     {
         'name': 'Сверка итогов по QR',
-        'callback': 'enter_sum:Сверка итогов по QR'
+        'callback': 'enter_sum:G'
     },
     {
         'name': 'Сумма доставки Яндекс',
-        'callback': 'enter_sum:Сумма доставки Яндек'
+        'callback': 'enter_sum:J'
     },
     {
         'name': 'Итого чек',
-        'callback': 'enter_sum:Итого чек'
+        'callback': '#'
     },
     {
         'name': 'Количество заказов',
-        'callback': 'enter_sum:Количество заказов'
+        'callback': '#'
     },
     {
-        'name': 'Денег на конец дня (факт)',
-        'callback': 'enter_sum:Денег на конец дня (факт)'
+        'name': 'Денег на конец дня',
+        'callback': 'enter_sum:M'
     },
     {
         'name': 'Вечерний пересчет 📷',
-        'callback': 'enter_sum:Вечерний пересчет 📷'
+        'callback': '#'
     },
     {
-        'name': 'Заказы с приложения (online)',
-        'callback': 'enter_sum:Заказы с приложения (online)'
+        'name': 'Заказы с приложения',
+        'callback': 'enter_sum:H'
     },
     {
         'name': 'Бонусы с приложения',
-        'callback': 'enter_sum:Бонусы с приложения'
+        'callback': 'enter_sum:I'
     },
     {
-        'name': 'Чеки (pdf файл) 📸',
-        'callback': 'recount'
+        'name': 'Чеки 📷',
+        'callback': '#'
     },
+    {
+        'name': 'Расходы',
+        'callback': 'enter_sum:P'
+    }
 ]
 
 async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> InlineKeyboardMarkup:
@@ -98,10 +102,10 @@ async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> In
 CHOOSE_FORMAT_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text='Прикрепите фото', callback_data='attach_photo'),
+            InlineKeyboardButton(text='Прикрепить фото', callback_data='attach_photo'),
         ],
         [
-            InlineKeyboardButton(text='Прикрепите файл', callback_data='attach_file'),
+            InlineKeyboardButton(text='Прикрепить файл', callback_data='attach_file'),
         ],
     ]
 )

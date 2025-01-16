@@ -12,6 +12,10 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.redis import RedisJobStore
 from apscheduler_di import ContextSchedulerDecorator
 
+from googleapiclient.discovery import build
+from google.oauth2.service_account import Credentials
+from google.oauth2.credentials import Credentials as CredentialsClient
+
 from bot.scheduler import schedule_opening_shift, schedule_closing_shift
 
 from bot.misc.configuration import conf
@@ -44,6 +48,17 @@ async def start_bot():
     scheduler.ctx.add_instance(bot, declared_class=Bot)
 
     dp = get_dispatcher(storage=storage, scheduler=scheduler)
+
+    credentials = Credentials.from_service_account_file(
+        'files/token.json',
+        scopes=[
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+    )
+    drive_service = build('drive', 'v3', credentials=credentials)
+    sheets_service = build('sheets', 'v4', credentials=credentials)
+
     scheduler_static = AsyncIOScheduler(timezone='Asia/Vladivostok')
     scheduler_static.add_job(
         schedule_opening_shift,
@@ -58,11 +73,15 @@ async def start_bot():
         kwargs={'bot': bot, 'apscheduler': scheduler_static, 'storage': storage}
     )
 
+    sheet = sheets_service.spreadsheets()
+    files = drive_service.files()
 
     scheduler.start()
     scheduler_static.start()
     await dp.start_polling(
         bot,
+        sheet=sheet,
+        files=files,
         allowed_updates=dp.resolve_used_update_types(),
         openai_client=openai_client
     )

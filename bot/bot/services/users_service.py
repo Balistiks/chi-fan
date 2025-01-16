@@ -30,3 +30,15 @@ async def get_functionals(tgId: int) -> dict | None:
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
             return None
+
+
+async def get_by_tg_id(tg_id: int) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.get(
+                f'{url}/users/{tg_id}'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None

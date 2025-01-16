@@ -23,4 +23,12 @@ export class UsersController {
       relations: ['roles', 'roles.users'],
     });
   }
+
+  @Get(':tgId')
+  async getByTgId(@Param('tgId') tgId: number): Promise<User> {
+    return await this.usersService.findOne({
+      where: { tgId },
+      relations: ['point'],
+    });
+  }
 }
