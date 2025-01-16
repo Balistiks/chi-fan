@@ -16,20 +16,34 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
 
-    if message.photo:
+    if message.video:
         await message.answer(
             text='Кассовый отчет',
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
-        )
-    elif message.document:
-        await message.answer(
-            text='Кассовый отчет',
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data['current_page'])
         )
     else:
         await state.set_state(CashReportState.recount)
         message = await message.answer(
-            text=f'Прикрепите {data['type']}'
+            text='Прикрепите видео'
+        )
+        await state.update_data(last_message_id=message.message_id)
+
+
+@messages_router.message(CashReportState.checks_file)
+async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext):
+    data = await state.get_data()
+    await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
+    await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
+
+    if message.document:
+        await message.answer(
+            text='Кассовый отчет',
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data['current_page'])
+        )
+    else:
+        await state.set_state(CashReportState.checks_file)
+        message = await message.answer(
+            text='Прикрепите файл'
         )
         await state.update_data(last_message_id=message.message_id)
 

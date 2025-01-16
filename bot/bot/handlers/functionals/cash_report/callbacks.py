@@ -39,30 +39,19 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
 
 
 @callbacks_router.callback_query(F.data == 'recount')
-async def morning_recount(callback: types.CallbackQuery, bot: Bot):
-    await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await callback.message.answer(
-        text='Выберите',
-        reply_markup=keyboards.functionals.cash_report.CHOOSE_FORMAT_KEYBOARD
-    )
-
-
-@callbacks_router.callback_query(F.data == 'attach_photo')
-async def attach_photo(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.recount)
-    await state.update_data(type='фото')
     message = await callback.message.answer(
-        text='Прикрепите фото'
+        text='Прикрепите видео'
     )
     await state.update_data(last_message_id=message.message_id)
 
 
-@callbacks_router.callback_query(F.data == 'attach_file')
-async def attach_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+@callbacks_router.callback_query(F.data == 'checks_file')
+async def checks_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
-    await state.set_state(CashReportState.recount)
-    await state.update_data(type='файл')
+    await state.set_state(CashReportState.checks_file)
     message = await callback.message.answer(
         text='Прикрепите файл'
     )
