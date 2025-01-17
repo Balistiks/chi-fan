@@ -63,7 +63,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Чеки (pdf файл) 📸',
-        'callback': 'checks_file'
+        'callback': 'checks_file:O'
     },
     {
         'name': 'Расходы',

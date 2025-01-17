@@ -56,12 +56,34 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
 
 
 @messages_router.message(CashReportState.checks_file)
-async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext):
+async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, files, sheet):
     data = await state.get_data()
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
 
     if message.document:
+        now_day = datetime.today().timetuple().tm_yday
+        user = await users_service.get_by_tg_id(message.from_user.id)
+        file = await bot.get_file(message.document.file_id)
+        document = await bot.download_file(file.file_path)
+        media = MediaIoBaseUpload(document, mimetype='application/pdf')
+        parent = '1XIzUDEx_RhkrfRPzfCXdkClmDEQ3aST-'
+        resp = files.create(
+            body={
+                'name': f'{datetime.today().strftime("%d.%m.%Y")}.pdf',
+                'parents': [parent]
+            },
+            media_body=media,
+            fields='id'
+        ).execute()
+        sheet.values().update(
+            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+            range=f"{user['point']['name']}!{data['recount_data']}{now_day + 1}",
+            valueInputOption="USER_ENTERED",
+            body={
+                'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
+            }
+        ).execute()
         await message.answer(
             text='Кассовый отчет',
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
