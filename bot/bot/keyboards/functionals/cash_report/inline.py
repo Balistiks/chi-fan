@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 data_cash_report_keyboard = [
     {
         'name': 'Утренний пересчет 📷',
-        'callback': '#'
+        'callback': 'recount'
     },
     {
         'name': 'Денег на начало дня',
@@ -51,7 +51,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Вечерний пересчет 📷',
-        'callback': '#'
+        'callback': 'recount'
     },
     {
         'name': 'Заказы с приложения',
@@ -62,8 +62,8 @@ data_cash_report_keyboard = [
         'callback': 'enter_sum:I'
     },
     {
-        'name': 'Чеки 📷',
-        'callback': '#'
+        'name': 'Чеки (pdf файл) 📸',
+        'callback': 'checks_file'
     },
     {
         'name': 'Расходы',
@@ -99,13 +99,10 @@ async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> In
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-CHOOSE_FORMAT_KEYBOARD = InlineKeyboardMarkup(
+ATTACH_VIDEO_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text='Прикрепить фото', callback_data='attach_photo'),
-        ],
-        [
-            InlineKeyboardButton(text='Прикрепить файл', callback_data='attach_file'),
-        ],
+            InlineKeyboardButton(text='Прикрепить', callback_data='attach_video'),
+        ]
     ]
 )
