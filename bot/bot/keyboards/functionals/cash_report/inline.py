@@ -7,7 +7,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 data_cash_report_keyboard = [
     {
         'name': 'Утренний пересчет 📷',
-        'callback': 'recount'
+        'callback': 'recount:K'
     },
     {
         'name': 'Денег на начало дня',
@@ -51,7 +51,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Вечерний пересчет 📷',
-        'callback': 'recount'
+        'callback': 'recount:L'
     },
     {
         'name': 'Заказы с приложения',

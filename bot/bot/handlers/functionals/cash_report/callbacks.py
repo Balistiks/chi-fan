@@ -38,14 +38,14 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
     )
 
 
-@callbacks_router.callback_query(F.data == 'recount')
+@callbacks_router.callback_query(F.data.startswith('recount:'))
 async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.recount)
     message = await callback.message.answer(
         text='Прикрепите видео'
     )
-    await state.update_data(last_message_id=message.message_id)
+    await state.update_data(last_message_id=message.message_id, recount_data=callback.data.split(':')[1])
 
 
 @callbacks_router.callback_query(F.data == 'checks_file')
