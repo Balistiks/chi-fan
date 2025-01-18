@@ -11,6 +11,9 @@ import { dataSourceOptions } from '../db/data-source';
 import { PointsModule } from './points/points.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
+import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
+import { SalariesModule } from './salaries/salaries.module';
+import { AdjustmentsModule } from './adjustments/adjustments.module';
 
 @Module({
   imports: [
@@ -29,6 +32,9 @@ import { ShiftsModule } from './shifts/shifts.module';
     PointsModule,
     EmployeesModule,
     ShiftsModule,
+    GoogleSheetsModule,
+    SalariesModule,
+    AdjustmentsModule,
   ],
   controllers: [],
   providers: [],
