@@ -49,7 +49,7 @@ export class SalariesController {
             where,
         });
       let sum1 = 0;
-        let sum2 = 0;
+      let sum2 = 0;
 
         const midMonth = new Date(startDate);
         midMonth.setDate(15)
