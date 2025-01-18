@@ -13,7 +13,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
 import { SalariesModule } from './salaries/salaries.module';
-import { AdjustmentsModule } from './adjustments/adjustments.module';
+// import { AdjustmentsModule } from './adjustments/adjustments.module';
 
 @Module({
   imports: [
@@ -34,7 +34,7 @@ import { AdjustmentsModule } from './adjustments/adjustments.module';
     ShiftsModule,
     GoogleSheetsModule,
     SalariesModule,
-    AdjustmentsModule,
+    // AdjustmentsModule,
   ],
   controllers: [],
   providers: [],

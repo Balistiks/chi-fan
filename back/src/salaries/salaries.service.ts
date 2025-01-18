@@ -2,7 +2,7 @@ import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Salary } from './entities/salary.entity';
-import { Repository } from 'typeorm';
+import {FindManyOptions, FindOneOptions, Repository} from 'typeorm';
 
 const months = [
   'Январь',
@@ -76,5 +76,13 @@ export class SalariesService implements OnApplicationBootstrap {
         Logger.error(e);
       }
     }
+  }
+
+  async findAll(options: FindManyOptions<Salary>): Promise<Salary[]> {
+    return await this.salaryRepository.find(options);
+  }
+
+  async findOne(options: FindOneOptions<Salary>): Promise<Salary> {
+    return await this.salaryRepository.findOne(options);
   }
 }
