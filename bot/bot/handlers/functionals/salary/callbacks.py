@@ -47,7 +47,7 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
     user = await users_service.get_by_tg_id(callback.from_user.id)
     user_name = user['name']
     mouth = data['mouth']
-    points = await salaries_service.get_names_points(point_name, user_name)
+    points = await salaries_service.get_names_points(user_name, mouth)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
     await state.update_data(mouth=mouth, user_name=user_name)
