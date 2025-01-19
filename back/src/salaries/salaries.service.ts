@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Salary } from './entities/salary.entity';
 import {FindManyOptions, FindOneOptions, Repository} from 'typeorm';
 
-const months = [
+const allMonths = [
   'Январь',
   'Февраль',
   'Март',
@@ -28,6 +28,10 @@ export class SalariesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
+    await this.fetchDataFromTables(allMonths);
+  }
+
+  async fetchDataFromTables(months: string[]) {
     const today = new Date();
     for (const month of months) {
       try {

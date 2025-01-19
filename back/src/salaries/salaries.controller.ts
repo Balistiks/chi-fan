@@ -1,4 +1,4 @@
-import {Controller, Get, Param} from '@nestjs/common';
+import { Controller, Get, Param, Patch } from '@nestjs/common';
 import {SalariesService} from "./salaries.service";
 import {Salary} from "./entities/salary.entity";
 import {endOfMonth, isWithinInterval, startOfMonth} from "date-fns";
@@ -71,7 +71,7 @@ export class SalariesController {
     }
 
 
-  @Get(':/id')
+  @Get(':id')
   async getById(@Param('id') id: number): Promise<Salary> {
       return await this.salariesService.findOne({
           where: {
@@ -79,6 +79,9 @@ export class SalariesController {
           }
       })
   }
+
+  @Patch(':month')
+  async update(@Param('month') month: string) {
+    await this.salariesService.fetchDataFromTables([month]);
+  }
 }
-
-
