@@ -80,7 +80,7 @@ async def salary_points_keyboard(points: list, month: str) -> InlineKeyboardMark
     buttons = []
 
     for point in points:
-        button = InlineKeyboardButton(text=point['pointName'], callback_data=f'salary-point_{point['pointName']}')
+        button = InlineKeyboardButton(text=point, callback_data=f'salary-point_{point}')
         buttons.append([button])
 
     buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'salary_{month}')])
