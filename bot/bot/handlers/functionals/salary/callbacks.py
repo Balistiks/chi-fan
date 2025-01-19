@@ -1,8 +1,10 @@
+from datetime import datetime
+
 from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
-
+from bot.services import salaries_service, users_service
 from bot import keyboards
 
 # TEST
@@ -24,8 +26,8 @@ async def salary(callback: types.CallbackQuery, bot: Bot):
 
 @callbacks_router.callback_query(F.data.startswith('salary_'))
 async def salary_detailing(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
-    mounth = callback.data.split('_')[1]
-    await state.update_data(mounth=mounth)
+    mouth = callback.data.split('_')[1]
+    await state.update_data(mouth=mouth)
 
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer_photo(
@@ -42,26 +44,31 @@ async def salary_detailing(callback: types.CallbackQuery, bot: Bot, state: FSMCo
 @callbacks_router.callback_query(F.data == 'detailing_by_points')
 async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
-    mounth = data['mounth']
+    user = await users_service.get_by_tg_id(callback.from_user.id)
+    user_name = user['name']
+    point_name = user['point']['name']
+    mouth = data['mouth']
+    data_salary = await salaries_service.get_by_name_point_employee_name(point_name, user_name, mouth)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+
+    await state.update_data(mouth=mouth, user_name=user_name, point_name=point_name)
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по точкам.png'),
-        reply_markup=await keyboards.functionals.salary.salary_points_keyboard(test, mounth)
+        reply_markup=await keyboards.functionals.salary.salary_points_keyboard(data_salary, mouth)
     )
 
 
 @callbacks_router.callback_query(F.data.startswith('salary-point_'))
-async def salary_point(callback: types.CallbackQuery, bot: Bot):
+async def salary_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+    data = await state.get_data()
+
     id = callback.data.split('_')[1]
-    for test_item in test:
-        if test_item['id'] == int(id):
-            data = test_item
-            break
+    sums = await salaries_service.get_sums(data['point_name'], data['user_name'], data['mouth'])
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer(
         text='<b>Итоги по вашим выплатам на этой точке:</b> \n\n'
-                f'<b>С 1 по 15 число</b> вы заработали:\n👉 {data['salary']}\n'
-                f'<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n👉 {data['salary']}\n\n'
+                f'<b>С 1 по 15 число</b> вы заработали:\n👉 {sums['sum1']}\n'
+                f'<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n👉 {sums['sum2']}\n\n'
                 'Ваш труд ценен, а заработанное — заслуженно ваше! 🚀🔥',
         parse_mode='HTML',
         reply_markup=keyboards.functionals.salary.BACK_DETAILING_KEYBOARD
@@ -71,21 +78,26 @@ async def salary_point(callback: types.CallbackQuery, bot: Bot):
 @callbacks_router.callback_query(F.data == 'detailing_by_days')
 async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
-    mounth = data['mounth']
+    user = await users_service.get_by_tg_id(callback.from_user.id)
+    user_name = user['name']
+    point_name = user['point']['name']
+    mouth = data['mouth']
+    data_salary = await salaries_service.get_by_name_point_employee_name(point_name, user_name, mouth)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
     analytics_text = "<b>Детальная аналитика по дням за месяц</b> 📅\n\n"
     analytics_text += "<b>- Дата | Точка | Сумма </b>\n"
 
-    for item in test:
-        if item['month'] == mounth:
-            for date, salary in item['daily_salary'].items():
-                analytics_text += f"{date} | {item['name']:<11} | {salary:<5}\n"
+
+    for item in data_salary:
+        date_str = datetime.strptime(item['date'], '%Y-%m-%d').strftime('%d.%m.%Y')
+        analytics_text += f"- {date_str} | {item['pointName']} | {item['sum']}\n"
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по дням.png'),
         caption=analytics_text,
         parse_mode='HTML',
-        reply_markup=keyboards.functionals.salary.BACK_DETAILING_BY_DAYS_KEYBOARD
+        reply_markup=await keyboards.functionals.salary.back_by_days_keyboard(mouth)
     )
+
 
