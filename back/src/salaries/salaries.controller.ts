@@ -1,0 +1,84 @@
+import {Controller, Get, Param} from '@nestjs/common';
+import {SalariesService} from "./salaries.service";
+import {Salary} from "./entities/salary.entity";
+import {endOfMonth, isWithinInterval, startOfMonth} from "date-fns";
+import {Between, FindOptionsWhere} from "typeorm";
+
+@Controller('salaries')
+export class SalariesController {
+  constructor(private readonly salariesService: SalariesService) {}
+
+
+   @Get(':namePoint/:employeeName/:month')
+    async findSalary(
+        @Param('namePoint') namePoint: string,
+        @Param('employeeName') employeeName: string,
+        @Param('month') month: number,
+    ): Promise<Salary[]> {
+        const now = new Date();
+        const startDate = startOfMonth(new Date(now.getFullYear(), month - 1, 1));
+        const endDate = endOfMonth(startDate);
+
+        const where: FindOptionsWhere<Salary> = {
+            pointName: namePoint,
+            employeeName: employeeName,
+            date: Between(startDate, endDate),
+        };
+
+        return await this.salariesService.findAll({
+            where,
+        });
+    }
+
+
+    @Get('sum/:namePoint/:employeeName/:month')
+    async findSalarySum(
+        @Param('namePoint') namePoint: string,
+        @Param('employeeName') employeeName: string,
+        @Param('month') month: number,
+    ): Promise<{ sum1: number, sum2: number }> {
+        const now = new Date();
+        const startDate = startOfMonth(new Date(now.getFullYear(), month - 1, 1));
+        const endDate = endOfMonth(startDate);
+         const where: FindOptionsWhere<Salary> = {
+              pointName: namePoint,
+              employeeName: employeeName,
+              date: Between(startDate, endDate)
+          };
+        const salaries = await this.salariesService.findAll({
+            where,
+        });
+      let sum1 = 0;
+      let sum2 = 0;
+
+        const midMonth = new Date(startDate);
+        midMonth.setDate(15)
+
+        if(salaries && salaries.length > 0) {
+             for (const salary of salaries) {
+                if (isWithinInterval(salary.date, { start: startDate, end: midMonth })) {
+                    sum1 += salary.sum;
+                  }
+                 else {
+                     sum2 += salary.sum;
+                   }
+             }
+        }
+
+
+
+        return { sum1, sum2 };
+    }
+
+
+  @Get(':/id')
+  async getById(@Param('id') id: number): Promise<Salary> {
+      return await this.salariesService.findOne({
+          where: {
+              id: id
+          }
+      })
+  }
+}
+
+
