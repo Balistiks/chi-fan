@@ -43,14 +43,14 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
-        await message.answer(
-            text='Кассовый отчет',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
         )
     else:
         await state.set_state(CashReportState.recount)
-        message = await message.answer(
-            text='Прикрепите видео'
+        message = await message.answer_photo(
+            photo=types.FSInputFile('./files/Добавление видео.png')
         )
         await state.update_data(last_message_id=message.message_id)
 
@@ -84,14 +84,14 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
-        await message.answer(
-            text='Кассовый отчет',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
         )
     else:
         await state.set_state(CashReportState.checks_file)
-        message = await message.answer(
-            text='Прикрепите файл'
+        message = await message.answer_photo(
+            photo=types.FSInputFile('./files/Добавление файла.png')
         )
         await state.update_data(last_message_id=message.message_id)
 
@@ -112,14 +112,14 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                 'values': [[int(message.text)]]
             }
         ).execute()
-        await message.answer(
-            text='Кассовый отчет',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:
         await state.set_state(CashReportState.enter_sum)
-        message = await message.answer(
-            text='Введите сумму'
+        message = await message.answer_photo(
+            photo=types.FSInputFile('./files/Указание суммы.png')
         )
         await state.update_data(last_message_id=message.message_id)
 
@@ -134,13 +134,13 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext):
     name_pattern = re.compile(r'^[а-яёА-ЯЁ]+ [а-яёА-ЯЁ]+ [а-яёА-ЯЁ]+$', re.IGNORECASE)
 
     if name_pattern.match(full_name):
-        await message.answer(
-            text='Кассовый отчет',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:
         await state.set_state(CashReportState.collected_fullname)
-        message = await message.answer(
-            text='Введите ФИО'
+        message = await message.answer_photo(
+            photo=types.FSInputFile('./files/Ввод ФИО.png')
         )
         await state.update_data(last_message_id=message.message_id)
