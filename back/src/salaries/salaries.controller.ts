@@ -31,7 +31,7 @@ export class SalariesController {
     return Array.from(new Set(salaries));
   }
 
-   @Get(':namePoint/:employeeName/:month')
+   @Get(':employeeName/:month')
     async findSalary(
         @Param('employeeName') employeeName: string,
         @Param('month') month: number,
