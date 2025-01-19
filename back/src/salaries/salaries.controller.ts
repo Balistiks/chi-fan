@@ -10,7 +10,7 @@ export class SalariesController {
 
   @Get('points/:month/:employeeName')
   async getPointsName(
-    @Param('month') month: string,
+    @Param('month') month: number,
     @Param('employeeName') employeeName: string,
   ): Promise<string[]> {
     const now = new Date();
