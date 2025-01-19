@@ -46,7 +46,6 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
     data = await state.get_data()
     user = await users_service.get_by_tg_id(callback.from_user.id)
     user_name = user['name']
-    point_name = user['point']['name']
     mouth = data['mouth']
     points = await salaries_service.get_names_points(point_name, user_name)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
@@ -61,7 +60,6 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
 @callbacks_router.callback_query(F.data.startswith('salary-point_'))
 async def salary_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
-
     point_name = callback.data.split('_')[1]
     sums = await salaries_service.get_sums(point_name, data['user_name'], data['mouth'])
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
@@ -80,9 +78,8 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
     data = await state.get_data()
     user = await users_service.get_by_tg_id(callback.from_user.id)
     user_name = user['name']
-    point_name = user['point']['name']
     mouth = data['mouth']
-    data_salary = await salaries_service.get_by_name_point_employee_name(point_name, user_name, mouth)
+    data_salary = await salaries_service.get_by_name_point_employee_name(user_name, mouth)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
     analytics_text = "<b>Детальная аналитика по дням за месяц</b> 📅\n\n"
