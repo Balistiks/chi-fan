@@ -1,17 +1,38 @@
 import { Controller, Get, Param, Patch } from '@nestjs/common';
-import {SalariesService} from "./salaries.service";
-import {Salary} from "./entities/salary.entity";
-import {endOfMonth, isWithinInterval, startOfMonth} from "date-fns";
-import {Between, FindOptionsWhere} from "typeorm";
+import { SalariesService } from './salaries.service';
+import { Salary } from './entities/salary.entity';
+import { endOfMonth, isWithinInterval, startOfMonth } from 'date-fns';
+import { Between, FindOptionsWhere } from 'typeorm';
 
 @Controller('salaries')
 export class SalariesController {
   constructor(private readonly salariesService: SalariesService) {}
 
+  @Get('points/:month/:employeeName')
+  async getPointsName(
+    @Param('month') month: string,
+    @Param('employeeName') employeeName: string,
+  ): Promise<string[]> {
+    const now = new Date();
+    const startDate = startOfMonth(new Date(now.getFullYear(), month - 1, 1));
+    const endDate = endOfMonth(startDate);
+
+    const where: FindOptionsWhere<Salary> = {
+      employeeName: employeeName,
+      date: Between(startDate, endDate),
+    };
+
+    const salaries = (
+      await this.salariesService.findAll({
+        where,
+      })
+    ).map((salary) => salary.pointName);
+
+    return Array.from(new Set(salaries));
+  }
 
    @Get(':namePoint/:employeeName/:month')
     async findSalary(
-        @Param('namePoint') namePoint: string,
         @Param('employeeName') employeeName: string,
         @Param('month') month: number,
     ): Promise<Salary[]> {
@@ -20,7 +41,6 @@ export class SalariesController {
         const endDate = endOfMonth(startDate);
 
         const where: FindOptionsWhere<Salary> = {
-            pointName: namePoint,
             employeeName: employeeName,
             date: Between(startDate, endDate),
         };

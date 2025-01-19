@@ -78,13 +78,10 @@ async def back_by_days_keyboard(month: str) -> InlineKeyboardMarkup:
 
 async def salary_points_keyboard(points: list, month: str) -> InlineKeyboardMarkup:
     buttons = []
-    unique_names = set()
 
     for point in points:
-        if point['pointName'] not in unique_names:
-            button = InlineKeyboardButton(text=point['pointName'], callback_data=f'salary-point_{point["id"]}')
-            buttons.append([button])
-            unique_names.add(point['pointName'])
+        button = InlineKeyboardButton(text=point['pointName'], callback_data=f'salary-point_{point['pointName']}')
+        buttons.append([button])
 
     buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'salary_{month}')])
 

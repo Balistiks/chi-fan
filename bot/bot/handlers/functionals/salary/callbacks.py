@@ -48,13 +48,13 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
     user_name = user['name']
     point_name = user['point']['name']
     mouth = data['mouth']
-    data_salary = await salaries_service.get_by_name_point_employee_name(point_name, user_name, mouth)
+    points = await salaries_service.get_names_points(point_name, user_name)
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
-    await state.update_data(mouth=mouth, user_name=user_name, point_name=point_name)
+    await state.update_data(mouth=mouth, user_name=user_name)
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по точкам.png'),
-        reply_markup=await keyboards.functionals.salary.salary_points_keyboard(data_salary, mouth)
+        reply_markup=await keyboards.functionals.salary.salary_points_keyboard(points, mouth)
     )
 
 
@@ -62,8 +62,8 @@ async def salary_by_points(callback: types.CallbackQuery, bot: Bot, state: FSMCo
 async def salary_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     data = await state.get_data()
 
-    id = callback.data.split('_')[1]
-    sums = await salaries_service.get_sums(data['point_name'], data['user_name'], data['mouth'])
+    point_name = callback.data.split('_')[1]
+    sums = await salaries_service.get_sums(point_name, data['user_name'], data['mouth'])
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer(
         text='<b>Итоги по вашим выплатам на этой точке:</b> \n\n'
