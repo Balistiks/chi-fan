@@ -3,6 +3,8 @@ import math
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from bot.services import users_service
+
 
 data_cash_report_keyboard = [
     {
@@ -70,6 +72,28 @@ data_cash_report_keyboard = [
         'callback': 'enter_sum:P'
     }
 ]
+
+async def date_keyboard(date_day: str, date_yesterday: str) -> InlineKeyboardMarkup:
+    buttons = []
+
+    buttons.append([InlineKeyboardButton(text='Сегодня', callback_data=f'date:{date_day}')])
+    buttons.append([InlineKeyboardButton(text='Вчера', callback_data=f'date:{date_yesterday}')])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+async def points_keyboard(tg_id: int) -> InlineKeyboardMarkup:
+    user = await users_service.get_by_tg_id(tg_id)
+    point = user.get('point', [])
+
+    buttons = []
+
+    buttons.append([InlineKeyboardButton(text=point['name'], callback_data=f'cash_point:{point["id"]}')])
+
+    buttons.append([InlineKeyboardButton(text="Назад", callback_data="main_menu")])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
 
 async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> InlineKeyboardMarkup:
     total_pages = math.ceil(len(data_cash_report_keyboard) / items_per_page)

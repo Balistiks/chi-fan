@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 
@@ -10,10 +12,39 @@ callbacks_router = Router()
 
 
 @callbacks_router.callback_query(F.data == 'cash_report')
-async def cash_report(callback: types.CallbackQuery, bot: Bot):
+async def cash_report(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    date_today = datetime.now().strftime('%d.%m.%Y')
+    date_yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
+
     await callback.message.answer(
-        text='Кассовый отчет',
+        text='Выберите день',
+        reply_markup=await keyboards.functionals.cash_report.date_keyboard(date_today, date_yesterday)
+    )
+
+
+@callbacks_router.callback_query(F.data.startswith('date:'))
+async def date(callback: types.CallbackQuery, state: FSMContext):
+    date = callback.data.split(':')[1]
+    await state.update_data(date=date)
+
+    await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
+
+    await callback.message.answer(
+        text='Выберите точку',
+        reply_markup=await keyboards.functionals.cash_report.points_keyboard(callback.from_user.id)
+    )
+
+
+@callbacks_router.callback_query(F.data.startswith('cash_point:'))
+async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+
+    id_point = callback.data.split(':')[1]
+    await state.update_data(id_point=id_point)
+
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
         reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
     )
 
