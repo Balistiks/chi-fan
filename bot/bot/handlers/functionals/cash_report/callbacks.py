@@ -4,6 +4,7 @@ from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
+from bot.services import points_service
 from bot.states import CashReportState
 from bot import keyboards
 
@@ -25,14 +26,15 @@ async def cash_report(callback: types.CallbackQuery, bot: Bot, state: FSMContext
 
 @callbacks_router.callback_query(F.data.startswith('date:'))
 async def date(callback: types.CallbackQuery, state: FSMContext):
-    date = callback.data.split(':')[1]
-    await state.update_data(date=date)
+    await state.update_data(date=callback.data.split(':')[1])
 
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
+    points_names = await points_service.get_names()
+
     await callback.message.answer(
         text='Выберите точку',
-        reply_markup=await keyboards.functionals.cash_report.points_keyboard(callback.from_user.id)
+        reply_markup=await keyboards.functionals.cash_report.points_keyboard(points_names)
     )
 
 
@@ -40,11 +42,10 @@ async def date(callback: types.CallbackQuery, state: FSMContext):
 async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
-    id_point = callback.data.split(':')[1]
-    await state.update_data(id_point=id_point)
+    await state.update_data(point_name=callback.data.split(':')[1])
 
     await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
         reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
     )
 

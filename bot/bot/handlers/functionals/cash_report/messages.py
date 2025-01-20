@@ -20,8 +20,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
 
     if message.video:
-        now_day = datetime.today().timetuple().tm_yday
-        user = await users_service.get_by_tg_id(message.from_user.id)
+        day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         file = await bot.get_file(message.video.file_id)
         video = await bot.download_file(file.file_path)
         media = MediaIoBaseUpload(video, mimetype='video/mp4')
@@ -29,7 +28,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
             if data['recount_data'] == 'K' else '1biqIsDTb9cXCdmZrlmZ1hJv05QA9_Vtp'
         resp = files.create(
             body={
-                'name': f'{datetime.today().strftime("%d.%m.%Y")}.mp4',
+                'name': f'{data["date"]}.mp4',
                 'parents': [parent]
             },
             media_body=media,
@@ -37,7 +36,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
         ).execute()
         sheet.values().update(
             spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{user['point']['name']}!{data['recount_data']}{now_day + 1}",
+            range=f"{data['point_name']}!{data['recount_data']}{day + 1}",
             valueInputOption="USER_ENTERED",
             body={
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
@@ -62,15 +61,14 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
 
     if message.document:
-        now_day = datetime.today().timetuple().tm_yday
-        user = await users_service.get_by_tg_id(message.from_user.id)
+        day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         file = await bot.get_file(message.document.file_id)
         document = await bot.download_file(file.file_path)
         media = MediaIoBaseUpload(document, mimetype='application/pdf')
         parent = '1XIzUDEx_RhkrfRPzfCXdkClmDEQ3aST-'
         resp = files.create(
             body={
-                'name': f'{datetime.today().strftime("%d.%m.%Y")}.pdf',
+                'name': f'{data["date"]}.pdf',
                 'parents': [parent]
             },
             media_body=media,
@@ -78,7 +76,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
         ).execute()
         sheet.values().update(
             spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{user['point']['name']}!{data['recount_data']}{now_day + 1}",
+            range=f"{data['point_name']}!{data['recount_data']}{day + 1}",
             valueInputOption="USER_ENTERED",
             body={
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
@@ -102,11 +100,10 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
     await message.bot.delete_message(chat_id=message.chat.id, message_id=data['last_message_id'])
     if message.text.isdigit():
-        now_day = datetime.today().timetuple().tm_yday
-        user = await users_service.get_by_tg_id(message.from_user.id)
+        day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         sheet.values().update(
             spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{user['point']['name']}!{data['data_cash']}{now_day+1}",
+            range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
             valueInputOption="USER_ENTERED",
             body={
                 'values': [[int(message.text)]]

@@ -69,7 +69,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Расходы',
-        'callback': 'enter_sum:P'
+        'callback': 'enter_sum:Q'
     }
 ]
 
@@ -82,13 +82,11 @@ async def date_keyboard(date_day: str, date_yesterday: str) -> InlineKeyboardMar
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-async def points_keyboard(tg_id: int) -> InlineKeyboardMarkup:
-    user = await users_service.get_by_tg_id(tg_id)
-    point = user.get('point', [])
-
+async def points_keyboard(points: list) -> InlineKeyboardMarkup:
     buttons = []
 
-    buttons.append([InlineKeyboardButton(text=point['name'], callback_data=f'cash_point:{point["id"]}')])
+    for point in points:
+        buttons.append([InlineKeyboardButton(text=point['name'], callback_data=f'cash_point:{point["name"]}')])
 
     buttons.append([InlineKeyboardButton(text="Назад", callback_data="main_menu")])
 

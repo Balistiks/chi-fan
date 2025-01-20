@@ -6,6 +6,11 @@ import {Point} from "./entities/point.entity";
 export class PointsController {
   constructor(private readonly pointsService: PointsService) {}
 
+  @Get('names')
+  async getNames(): Promise<Point[]> {
+    return await this.pointsService.getAll({ select: { name: true } });
+  }
+
   @Get('all')
   async getPoints(): Promise<Point[]> {
     return await this.pointsService.getAll({
