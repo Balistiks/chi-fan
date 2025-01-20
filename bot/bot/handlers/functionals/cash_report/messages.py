@@ -44,7 +44,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
             }
         ).execute()
         await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
         )
     else:
@@ -85,13 +85,13 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
             }
         ).execute()
         await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
         )
     else:
         await state.set_state(CashReportState.checks_file)
         message = await message.answer_photo(
-            photo=types.FSInputFile('./files/Добавление файла.png')
+            photo=types.FSInputFile('./files/Добавление файла.png')
         )
         await state.update_data(last_message_id=message.message_id)
 
@@ -113,7 +113,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
             }
         ).execute()
         await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:
@@ -135,7 +135,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext):
 
     if name_pattern.match(full_name):
         await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
         )
     else:

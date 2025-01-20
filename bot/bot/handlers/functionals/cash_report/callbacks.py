@@ -13,7 +13,7 @@ callbacks_router = Router()
 async def cash_report(callback: types.CallbackQuery, bot: Bot):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
         reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
     )
 
@@ -33,7 +33,7 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
 
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
         reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page)
     )
 
@@ -53,7 +53,7 @@ async def checks_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.checks_file)
     message = await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Добавление файла.png')
+        photo=types.FSInputFile('./files/Добавление файла.png')
     )
     await state.update_data(last_message_id=message.message_id, recount_data=callback.data.split(':')[1])
 
