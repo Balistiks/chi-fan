@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot import keyboards
 from bot.states import NewEmployeeState
-from bot.services import users_service
+from bot.services import users_service, names_service
 from bot.misc import functions
 
 messages_router = Router()
@@ -37,7 +37,10 @@ async def get_name(message: types.Message, state: FSMContext, bot: Bot):
 
     name_pattern = re.compile(r"^[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$", re.IGNORECASE)
 
-    if re.match(name_pattern, message.text):
+    is_exist = await names_service.is_exist(message.text)
+    print(is_exist)
+
+    if re.match(name_pattern, message.text) and is_exist:
         await state.update_data(name=message.text)
 
         await users_service.save({

@@ -3,6 +3,8 @@ import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Salary } from './entities/salary.entity';
 import {FindManyOptions, FindOneOptions, Repository} from 'typeorm';
+import { NamesService } from '../names/names.service';
+import { Name } from '../names/entities/name.entity';
 
 const allMonths = [
   'Январь',
@@ -25,10 +27,23 @@ export class SalariesService implements OnApplicationBootstrap {
     @InjectRepository(Salary)
     private salaryRepository: Repository<Salary>,
     private readonly googleSheetsService: GoogleSheetsService,
+    private readonly namesService: NamesService,
   ) {}
 
   async onApplicationBootstrap() {
     await this.fetchDataFromTables(allMonths);
+  }
+
+  async saveName(name: string) {
+    const nameObj = await this.namesService.findOne({ where: { name } });
+    if (nameObj != null) {
+      nameObj.name = name;
+      await this.namesService.save(nameObj);
+    } else {
+      const newName = new Name();
+      newName.name = name;
+      await this.namesService.save(newName);
+    }
   }
 
   async fetchDataFromTables(months: string[]) {
@@ -46,6 +61,7 @@ export class SalariesService implements OnApplicationBootstrap {
             !line[0].startsWith('Итого') &&
             line[0] != ''
           ) {
+            await this.saveName(line[1]);
             for (let i = 2; i <= 44; i++) {
               if ((i < 17 || i > 22) && i < 39) {
                 if (line[i] != '') {

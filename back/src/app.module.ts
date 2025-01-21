@@ -14,6 +14,7 @@ import { ShiftsModule } from './shifts/shifts.module';
 import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
 import { SalariesModule } from './salaries/salaries.module';
 // import { AdjustmentsModule } from './adjustments/adjustments.module';
+import { NamesModule } from './names/names.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SalariesModule } from './salaries/salaries.module';
     ShiftsModule,
     GoogleSheetsModule,
     SalariesModule,
+    NamesModule,
     // AdjustmentsModule,
   ],
   controllers: [],
