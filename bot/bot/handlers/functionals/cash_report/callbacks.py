@@ -115,6 +115,21 @@ async def enter_sum(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await state.update_data(last_message_id=message.message_id, data_cash=data_callback)
 
 
+
+@callbacks_router.callback_query(F.data.startswith('comment:'))
+async def enter_sum(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
+    await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    await state.set_state(CashReportState.comment)
+    data_callback = callback.data.split(':')[1]
+    await state.update_data(id=data_callback, callback_data=callback.data)
+
+    message = await callback.message.answer(
+        text='Напишите комментарий',
+        reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
+    )
+    await state.update_data(last_message_id=message.message_id, data_cash=data_callback)
+
+
 @callbacks_router.callback_query(F.data == 'collected_fullname')
 async def collected_fullname(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
