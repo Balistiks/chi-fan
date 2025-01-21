@@ -42,13 +42,21 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
-        await cash_report_service.update({
-            'id': data['id'],
-            'done': True
-        })
+        items = keyboards.functionals.cash_report.data_cash_report_keyboard
+        for item in items:
+            if item['callback'] == data['callback_data']:
+                await cash_report_service.create({
+                    'name': f"{item['name']}",
+                    'point': int(data['id_point']),
+                })
+
         await message.answer_photo(
             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                      day=data['day'],
+                                                                                      mouth=data['mouth'],
+                                                                                      year=data['year'],
+                                                                                      point_name=data['point_name'])
         )
     else:
         await state.set_state(CashReportState.recount)
@@ -87,14 +95,21 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
-        await cash_report_service.update({
-            'id': data['id'],
-            'done': True
-        })
+        items = keyboards.functionals.cash_report.data_cash_report_keyboard
+        for item in items:
+            if item['callback'] == data['callback_data']:
+                await cash_report_service.create({
+                    'name': f"{item['name']}",
+                    'point': int(data['id_point']),
+                })
         await message.answer_photo(
              photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
-         )
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                      day=data['day'],
+                                                                                      mouth=data['mouth'],
+                                                                                      year=data['year'],
+                                                                                      point_name=data['point_name'])
+        )
     else:
         await state.set_state(CashReportState.checks_file)
         message = await message.answer_photo(
@@ -120,13 +135,20 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                 'values': [[int(message.text)]]
             }
         ).execute()
-        await cash_report_service.update({
-            'id': data['id'],
-            'done': True
-        })
+        items = keyboards.functionals.cash_report.data_cash_report_keyboard
+        for item in items:
+            if item['callback'] == data['callback_data']:
+                await cash_report_service.create({
+                    'name': f"{item['name']}",
+                    'point': int(data['id_point']),
+                })
         await message.answer_photo(
             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                      day=data['day'],
+                                                                                      mouth=data['mouth'],
+                                                                                      year=data['year'],
+                                                                                      point_name=data['point_name'])
         )
     else:
         await state.set_state(CashReportState.enter_sum)

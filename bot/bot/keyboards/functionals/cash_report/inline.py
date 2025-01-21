@@ -64,8 +64,8 @@ data_cash_report_keyboard = [
 async def date_keyboard(date_day: str, date_yesterday: str) -> InlineKeyboardMarkup:
     buttons = []
 
-    buttons.append([InlineKeyboardButton(text='Сегодня', callback_data=f'date:{date_day}')])
-    buttons.append([InlineKeyboardButton(text='Вчера', callback_data=f'date:{date_yesterday}')])
+    buttons.append([InlineKeyboardButton(text=date_day, callback_data=f'date:{date_day}')])
+    buttons.append([InlineKeyboardButton(text=date_yesterday, callback_data=f'date:{date_yesterday}')])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -81,21 +81,24 @@ async def points_keyboard(points: list) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> InlineKeyboardMarkup:
-    data_cash_report_keyboard = await cash_report_service.get_all()
-    total_pages = math.ceil(len(data_cash_report_keyboard) / items_per_page)
+async def cash_report_keyboard(current_page: int, day: str, mouth: str, year: str, point_name: str,
+                               items_per_page: int = 10) -> InlineKeyboardMarkup:
+    data = await cash_report_service.get_all(day=day, mouth=mouth, year=year, name=point_name)
 
+    done_items = {item['name']: item['done'] for item in data}
+
+    total_pages = math.ceil(len(data_cash_report_keyboard) / items_per_page)
     buttons = []
 
     start_index = current_page * items_per_page
     end_index = start_index + items_per_page
+
     page_items = data_cash_report_keyboard[start_index:end_index]
 
     for item in page_items:
-        if item['done'] == True:
-            buttons.append([InlineKeyboardButton(text=f'{item['name']} ✅', callback_data=f'{item['callback']}:{item['id']}')])
-        else:
-            buttons.append([InlineKeyboardButton(text=f'{item['name']}', callback_data=f'{item['callback']}:{item["id"]}')])
+        button_text = item['name'] + ' ✅' if done_items.get(item['name'], False) else item['name']
+        callback_data = item['callback']
+        buttons.append([InlineKeyboardButton(text=button_text, callback_data=callback_data)])
 
     prev_callback_data = f'cash_report-prev_page_{current_page - 1}' if current_page > 0 else '#'
     next_callback_data = f'cash_report-next_page_{current_page + 1}' if current_page < total_pages - 1 else '#'

@@ -1,6 +1,7 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Shift } from '../../shifts/entities/shift.entity';
 import { User } from '../../users/entities/user.entity';
+import {CashReport} from "../../cash-reports/entitties/cash-report.entity";
 
 @Entity()
 export class Point {
@@ -21,4 +22,7 @@ export class Point {
 
   @OneToMany(() => User, (user: User) => user.point)
   users: User[];
+
+  @OneToMany(() => CashReport, (cashReport: CashReport)=> cashReport.point)
+  cashReport: CashReport[];
 }

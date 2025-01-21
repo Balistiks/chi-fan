@@ -41,12 +41,17 @@ async def date(callback: types.CallbackQuery, state: FSMContext):
 @callbacks_router.callback_query(F.data.startswith('cash_point:'))
 async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    data = await state.get_data()
+    day = data['date'].split('.')[0]
+    mouth = data['date'].split('.')[1]
+    year = data['date'].split('.')[2]
 
-    await state.update_data(point_name=callback.data.split(':')[1])
+    point_data = await cash_report_service.get_all(day=day, mouth=mouth, year=year, name=callback.data.split(':')[1])
+    await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point_data[0]['point']['id'])
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)
+        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=callback.data.split(':')[1])
     )
 
 
@@ -66,7 +71,7 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page)
+        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=current_page, day=data['day'], mouth=data['mouth'], year=data['year'], point_name=data['point_name'])
     )
 
 
@@ -74,7 +79,7 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
 async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.recount)
-    await state.update_data(id=callback.data.split(':')[2])
+    await state.update_data(id=callback.data.split(':')[1], callback_data=callback.data)
     message = await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Добавление видео.png'),
         reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
@@ -86,7 +91,7 @@ async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
 async def checks_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.checks_file)
-    await state.update_data(id=callback.data.split(':')[2])
+    await state.update_data(id=callback.data.split(':')[1], callback_data=callback.data)
     message = await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Добавление файла.png'),
         reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
@@ -99,7 +104,7 @@ async def enter_sum(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.enter_sum)
     data_callback = callback.data.split(':')[1]
-    await state.update_data(id=callback.data.split(':')[2])
+    await state.update_data(id=data_callback, callback_data=callback.data)
 
     message = await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Указание суммы.png'),

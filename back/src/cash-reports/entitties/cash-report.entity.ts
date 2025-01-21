@@ -1,4 +1,5 @@
-import {Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn} from 'typeorm';
+import {Point} from "../../points/entities/point.entity";
 
 @Entity()
 export class CashReport {
@@ -8,9 +9,12 @@ export class CashReport {
     @Column('varchar', { nullable: false })
     name: string;
 
-    @Column('varchar', { nullable: false })
-    callback: string;
+    @CreateDateColumn()
+    createAt: Date;
 
-    @Column('boolean', { default: false })
+    @Column('boolean', { default: true })
     done: boolean;
+
+    @ManyToOne(() => Point, (point: Point)=> point.cashReport)
+    point: Point;
 }
