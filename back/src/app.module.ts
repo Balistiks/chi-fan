@@ -15,6 +15,7 @@ import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
 import { SalariesModule } from './salaries/salaries.module';
 // import { AdjustmentsModule } from './adjustments/adjustments.module';
 import { NamesModule } from './names/names.module';
+import { CashReportsModule } from './cash-reports/cash-reports.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { NamesModule } from './names/names.module';
     GoogleSheetsModule,
     SalariesModule,
     NamesModule,
+    CashReportsModule,
     // AdjustmentsModule,
   ],
   controllers: [],

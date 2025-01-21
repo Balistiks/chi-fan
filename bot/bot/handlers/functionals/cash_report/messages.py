@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from googleapiclient.http import MediaIoBaseUpload
 
 from bot.misc import functions
-from bot.services import users_service
+from bot.services import users_service, cash_report_service
 from bot.states import CashReportState
 from bot import keyboards
 
@@ -42,6 +42,10 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
+        await cash_report_service.update({
+            'id': data['id'],
+            'done': True
+        })
         await message.answer_photo(
             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
@@ -60,15 +64,16 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
 
-    if message.document:
-        day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
-        file = await bot.get_file(message.document.file_id)
+    if message.photo:
+        photo = message.photo[-1]
+        file = await bot.get_file(photo.file_id)
         document = await bot.download_file(file.file_path)
-        media = MediaIoBaseUpload(document, mimetype='application/pdf')
+        media = MediaIoBaseUpload(document, mimetype='image/png')
         parent = '1XIzUDEx_RhkrfRPzfCXdkClmDEQ3aST-'
+        file_name = f'{data["date"]}.png'
         resp = files.create(
             body={
-                'name': f'{data["date"]}.pdf',
+                'name': file_name,
                 'parents': [parent]
             },
             media_body=media,
@@ -76,22 +81,28 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
         ).execute()
         sheet.values().update(
             spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{data['point_name']}!{data['recount_data']}{day + 1}",
+            range=f"{data['point_name']}!{data['recount_data']}{datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday + 1}",
             valueInputOption="USER_ENTERED",
             body={
                 'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
             }
         ).execute()
+        await cash_report_service.update({
+            'id': data['id'],
+            'done': True
+        })
         await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
-        )
+             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(data.get('current_page', 0))
+         )
     else:
         await state.set_state(CashReportState.checks_file)
         message = await message.answer_photo(
             photo=types.FSInputFile('./files/Добавление файла.png')
         )
         await state.update_data(last_message_id=message.message_id)
+
+
 
 
 @messages_router.message(CashReportState.enter_sum)
@@ -109,6 +120,10 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                 'values': [[int(message.text)]]
             }
         ).execute()
+        await cash_report_service.update({
+            'id': data['id'],
+            'done': True
+        })
         await message.answer_photo(
             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(0)

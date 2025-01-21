@@ -3,7 +3,7 @@ import math
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from bot.services import users_service
+from bot.services import users_service, cash_report_service
 
 
 data_cash_report_keyboard = [
@@ -17,22 +17,14 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Приход',
-        'callback': 'coming'
+        'callback': 'enter_sum:D'
     },
     {
         'name': 'Инкассация (сумма)',
         'callback': 'enter_sum:E'
     },
     {
-        'name': 'Инкассировал (ФИО)',
-        'callback': 'collected_fullname'
-    },
-    {
         'name': 'Сверка итогов',
-        'callback': 'enter_sum:G'
-    },
-    {
-        'name': 'Сверка итогов по QR',
         'callback': 'enter_sum:G'
     },
     {
@@ -41,11 +33,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Итого чек',
-        'callback': '#'
-    },
-    {
-        'name': 'Количество заказов',
-        'callback': '#'
+        'callback': 'enter_sum:F'
     },
     {
         'name': 'Денег на конец дня',
@@ -64,7 +52,7 @@ data_cash_report_keyboard = [
         'callback': 'enter_sum:I'
     },
     {
-        'name': 'Чеки (pdf файл) 📸',
+        'name': 'Чеки (фото) 📸',
         'callback': 'checks_file:O'
     },
     {
@@ -94,6 +82,7 @@ async def points_keyboard(points: list) -> InlineKeyboardMarkup:
 
 
 async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> InlineKeyboardMarkup:
+    data_cash_report_keyboard = await cash_report_service.get_all()
     total_pages = math.ceil(len(data_cash_report_keyboard) / items_per_page)
 
     buttons = []
@@ -103,9 +92,10 @@ async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> In
     page_items = data_cash_report_keyboard[start_index:end_index]
 
     for item in page_items:
-        buttons.append([InlineKeyboardButton(text=item['name'], callback_data=item['callback'])])
-
-    buttons.append([InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu')])
+        if item['done'] == True:
+            buttons.append([InlineKeyboardButton(text=f'{item['name']} ✅', callback_data=f'{item['callback']}:{item['id']}')])
+        else:
+            buttons.append([InlineKeyboardButton(text=f'{item['name']}', callback_data=f'{item['callback']}:{item["id"]}')])
 
     prev_callback_data = f'cash_report-prev_page_{current_page - 1}' if current_page > 0 else '#'
     next_callback_data = f'cash_report-next_page_{current_page + 1}' if current_page < total_pages - 1 else '#'
@@ -117,6 +107,7 @@ async def cash_report_keyboard(current_page: int, items_per_page: int = 8) -> In
     ]
 
     buttons.append(navigation_buttons)
+    buttons.append([InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu')])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -125,6 +116,14 @@ ATTACH_VIDEO_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(text='Прикрепить', callback_data='attach_video'),
+        ]
+    ]
+)
+
+BACK_KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [
+            InlineKeyboardButton(text='Назад', callback_data='cash_point:'),
         ]
     ]
 )

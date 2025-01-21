@@ -4,7 +4,7 @@ from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
-from bot.services import points_service
+from bot.services import points_service, cash_report_service
 from bot.states import CashReportState
 from bot import keyboards
 
@@ -74,8 +74,10 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
 async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.recount)
+    await state.update_data(id=callback.data.split(':')[2])
     message = await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Добавление видео.png'),
+        reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id, recount_data=callback.data.split(':')[1])
 
@@ -84,8 +86,10 @@ async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
 async def checks_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.checks_file)
+    await state.update_data(id=callback.data.split(':')[2])
     message = await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Добавление файла.png')
+        photo=types.FSInputFile('./files/Добавление файла.png'),
+        reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id, recount_data=callback.data.split(':')[1])
 
@@ -95,8 +99,11 @@ async def enter_sum(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.enter_sum)
     data_callback = callback.data.split(':')[1]
+    await state.update_data(id=callback.data.split(':')[2])
+
     message = await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Указание суммы.png')
+        photo=types.FSInputFile('./files/Указание суммы.png'),
+        reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id, data_cash=data_callback)
 
@@ -106,6 +113,7 @@ async def collected_fullname(callback: types.CallbackQuery, bot: Bot, state: FSM
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
     await state.set_state(CashReportState.collected_fullname)
     message = await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Ввод ФИО.png')
+        photo=types.FSInputFile('./files/Ввод ФИО.png'),
+        reply_markup=keyboards.functionals.cash_report.BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id)
