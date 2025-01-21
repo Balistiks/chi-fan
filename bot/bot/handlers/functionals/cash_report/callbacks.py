@@ -46,14 +46,13 @@ async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext)
     mouth = data['date'].split('.')[1]
     year = data['date'].split('.')[2]
 
-    user = await users_service.get_by_tg_id(callback.from_user.id)
-    point_name = user['point']['name']
+    point = await points_service.get_by_name(callback.data.split(':')[1])
 
-    await state.update_data(point_name=point_name, day=day, mouth=mouth, year=year, id_point=user['point']['id'])
+    await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point['id'])
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=point_name)
+        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=callback.data.split(':')[1])
     )
 
 

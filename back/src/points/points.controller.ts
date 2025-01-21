@@ -17,4 +17,9 @@ export class PointsController {
       relations: ['user', 'user.role'],
     });
   }
+
+  @Get(':name')
+  async getByName(@Param('name') name: string): Promise<Point> {
+    return await this.pointsService.findOne({ where: { name } });
+  }
 }
