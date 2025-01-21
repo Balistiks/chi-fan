@@ -1,8 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {Body, Controller, Get, Param, Post} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Functional } from '../functionals/entities/functional.entity';
 import { FunctionalsService } from '../functionals/functionals.service';
 import {User} from "./entities/user.entity";
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -30,5 +31,10 @@ export class UsersController {
       where: { tgId },
       relations: ['point'],
     });
+  }
+
+  @Post()
+  async create(@Body() user: CreateUserDto): Promise<User> {
+    return await this.usersService.save(user);
   }
 }
