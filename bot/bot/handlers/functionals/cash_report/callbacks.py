@@ -4,7 +4,7 @@ from aiogram import Router, types, F, Bot
 from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
-from bot.services import points_service, cash_report_service
+from bot.services import points_service, cash_report_service, users_service
 from bot.states import CashReportState
 from bot import keyboards
 
@@ -46,12 +46,14 @@ async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext)
     mouth = data['date'].split('.')[1]
     year = data['date'].split('.')[2]
 
-    point_data = await cash_report_service.get_all(day=day, mouth=mouth, year=year, name=callback.data.split(':')[1])
-    await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point_data[0]['point']['id'])
+    user = await users_service.get_by_tg_id(callback.from_user.id)
+    point_name = user['point']['name']
+
+    await state.update_data(point_name=point_name, day=day, mouth=mouth, year=year, id_point=user['point']['id'])
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=callback.data.split(':')[1])
+        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=point_name)
     )
 
 
