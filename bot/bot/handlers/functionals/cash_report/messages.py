@@ -158,6 +158,44 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
         await state.update_data(last_message_id=message.message_id)
 
 
+@messages_router.message(CashReportState.comment)
+async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet):
+    data = await state.get_data()
+    await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
+    await message.bot.delete_message(chat_id=message.chat.id, message_id=data['last_message_id'])
+    if message.text:
+        day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
+        sheet.values().update(
+            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+            range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
+            valueInputOption="USER_ENTERED",
+            body={
+                'values': [[message.text]]
+            }
+        ).execute()
+        items = keyboards.functionals.cash_report.data_cash_report_keyboard
+        for item in items:
+            if item['callback'] == data['callback_data']:
+                await cash_report_service.create({
+                    'name': f"{item['name']}",
+                    'point': int(data['id_point']),
+                })
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                      day=data['day'],
+                                                                                      mouth=data['mouth'],
+                                                                                      year=data['year'],
+                                                                                      point_name=data['point_name'])
+        )
+    else:
+        await state.set_state(CashReportState.enter_sum)
+        message = await message.answer_photo(
+            photo=types.FSInputFile('./files/Указание суммы.png')
+        )
+        await state.update_data(last_message_id=message.message_id)
+
+
 @messages_router.message(CashReportState.collected_fullname)
 async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext):
     data = await state.get_data()

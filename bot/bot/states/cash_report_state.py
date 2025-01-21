@@ -6,3 +6,4 @@ class CashReportState(StatesGroup):
     enter_sum = State()
     collected_fullname = State()
     checks_file = State()
+    comment = State()

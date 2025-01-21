@@ -58,6 +58,10 @@ data_cash_report_keyboard = [
     {
         'name': 'Расходы',
         'callback': 'enter_sum:Q'
+    },
+    {
+        'name': 'Комментарий к расходам',
+        'callback': 'comment:Q'
     }
 ]
 
