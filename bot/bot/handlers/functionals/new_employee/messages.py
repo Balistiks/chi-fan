@@ -35,10 +35,9 @@ async def get_name(message: types.Message, state: FSMContext, bot: Bot):
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=data['last_message_id'])
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
 
-    name_pattern = re.compile(r"^[А-ЯЁ][а-яё]*\s[А-ЯЁ][а-яё]*$", re.IGNORECASE)
+    name_pattern = re.compile(r"^[А-ЯЁË][а-яёë]*\s[А-ЯЁË][а-яёë]*$", re.IGNORECASE)
 
     is_exist = await names_service.is_exist(message.text)
-    print(is_exist)
 
     if re.match(name_pattern, message.text) and is_exist:
         await state.update_data(name=message.text)
