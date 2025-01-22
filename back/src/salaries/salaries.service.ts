@@ -64,7 +64,10 @@ export class SalariesService implements OnApplicationBootstrap {
             await this.saveName(line[1]);
             for (let i = 2; i <= 44; i++) {
               if ((i < 17 || i > 22) && i < 39) {
-                if (line[i] != '') {
+                if (
+                  line[i] != '' &&
+                  (line[i] != undefined || line[i] != null)
+                ) {
                   const dateArray = data[1][i].split('.');
                   const date = new Date(
                     `${today.getFullYear()}-${dateArray[1]}-${dateArray[0]}`,
