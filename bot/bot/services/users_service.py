@@ -55,3 +55,16 @@ async def save(user: dict) -> dict | None:
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
             return None
+
+
+async def update(user: dict) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.patch(
+                f'{url}/users',
+                data=user
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
