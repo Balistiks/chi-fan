@@ -70,7 +70,7 @@ async def date_keyboard(date_day: str, date_yesterday: str) -> InlineKeyboardMar
 
     buttons.append([InlineKeyboardButton(text=date_day, callback_data=f'date:{date_day}')])
     buttons.append([InlineKeyboardButton(text=date_yesterday, callback_data=f'date:{date_yesterday}')])
-
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data='main_menu')])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
@@ -80,7 +80,7 @@ async def points_keyboard(points: list) -> InlineKeyboardMarkup:
     for point in points:
         buttons.append([InlineKeyboardButton(text=point['name'], callback_data=f'cash_point:{point["name"]}')])
 
-    buttons.append([InlineKeyboardButton(text="Назад", callback_data="main_menu")])
+    buttons.append([InlineKeyboardButton(text="Назад", callback_data=f"cash_report")])
 
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -134,3 +134,10 @@ BACK_KEYBOARD = InlineKeyboardMarkup(
         ]
     ]
 )
+
+async def back_keyboard(point_name: str) -> InlineKeyboardMarkup:
+    buttons = []
+
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'cash_point:{point_name}')])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
