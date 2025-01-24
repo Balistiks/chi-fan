@@ -8,7 +8,10 @@ export class PointsController {
 
   @Get('names')
   async getNames(): Promise<Point[]> {
-    return await this.pointsService.getAll({ select: { name: true } });
+    return await this.pointsService.getAll({
+      select: { name: true },
+      where: { cashReportUsage: true },
+    });
   }
 
   @Get('all')

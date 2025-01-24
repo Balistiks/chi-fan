@@ -1,23 +1,26 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from 'typeorm';
-import {Point} from "../../points/entities/point.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Point } from '../../points/entities/point.entity';
 
 @Entity()
 export class Schedule {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string;
+  @Column({ nullable: false })
+  name: string;
 
-    @Column('date')
-    date: Date;
+  @Column('date', { nullable: false })
+  date: Date;
 
-    @Column()
-    point: string;
+  @Column({ nullable: true })
+  comment: string;
 
-    @Column('time')
-    startTime: Date;
+  @Column('time', { nullable: false })
+  startTime: string;
 
-    @Column('time')
-    endTime: Date;
+  @Column('time', { nullable: false })
+  endTime: string;
+
+  @ManyToOne(() => Point, (point: Point) => point.schedules)
+  point: Point;
 }
