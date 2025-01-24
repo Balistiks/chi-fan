@@ -1,7 +1,7 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { PointsService } from '../points/points.service';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from "typeorm";
 import { Revenue } from './entities/revenue.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -56,5 +56,14 @@ export class RevenuesService implements OnApplicationBootstrap {
         }
       }
     }
+  }
+
+
+  async getAll(options: FindManyOptions<Revenue>): Promise<Revenue[]> {
+    return await this.revenueRepository.find(options);
+  }
+
+  async findOne(options: FindOneOptions<Revenue>): Promise<Revenue> {
+    return await this.revenueRepository.findOne(options);
   }
 }

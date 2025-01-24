@@ -4,6 +4,7 @@ import { GoogleSheetsModule } from '../google-sheets/google-sheets.module';
 import { PointsModule } from '../points/points.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Revenue } from './entities/revenue.entity';
+import { RevenuesController } from './revenues.controller';
 
 @Module({
   imports: [
@@ -12,5 +13,6 @@ import { Revenue } from './entities/revenue.entity';
     PointsModule,
   ],
   providers: [RevenuesService],
+  controllers: [RevenuesController],
 })
 export class RevenuesModule {}
