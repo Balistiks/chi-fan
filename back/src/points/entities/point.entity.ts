@@ -2,6 +2,7 @@ import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'type
 import { Shift } from '../../shifts/entities/shift.entity';
 import { User } from '../../users/entities/user.entity';
 import {CashReport} from "../../cash-reports/entitties/cash-report.entity";
+import {Schedule} from "../../schedules/entities/schedule.entity";
 
 @Entity()
 export class Point {

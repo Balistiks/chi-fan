@@ -17,4 +17,10 @@ export class PointsService {
   async findOne(options: FindOneOptions<Point>): Promise<Point> {
         return await this.pointRepository.findOne(options);
   }
+
+    async findByName(name: string): Promise<Point> {
+        return await this.pointRepository.findOne({
+            where: { name },
+        });
+    }
 }

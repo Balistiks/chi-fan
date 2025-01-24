@@ -16,6 +16,7 @@ import { SalariesModule } from './salaries/salaries.module';
 // import { AdjustmentsModule } from './adjustments/adjustments.module';
 import { NamesModule } from './names/names.module';
 import { CashReportsModule } from './cash-reports/cash-reports.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CashReportsModule } from './cash-reports/cash-reports.module';
     SalariesModule,
     NamesModule,
     CashReportsModule,
+    SchedulesModule,
     // AdjustmentsModule,
   ],
   controllers: [],
