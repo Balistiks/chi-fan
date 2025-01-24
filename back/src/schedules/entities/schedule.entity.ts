@@ -21,6 +21,9 @@ export class Schedule {
   @Column('time', { nullable: false })
   endTime: string;
 
+  @Column({ nullable: false })
+  cell: string;
+
   @ManyToOne(() => Point, (point: Point) => point.schedules)
   point: Point;
 }

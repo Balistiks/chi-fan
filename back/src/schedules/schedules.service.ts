@@ -21,6 +21,42 @@ const allMonths = [
   'Декабрь',
 ];
 
+const columnsNames = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+  'AA',
+  'AB',
+  'AC',
+  'AD',
+  'AE',
+  'AF',
+  'AG',
+];
+
 @Injectable()
 export class SchedulesService implements OnApplicationBootstrap {
   constructor(
@@ -95,6 +131,7 @@ export class SchedulesService implements OnApplicationBootstrap {
                     newSchedule.startTime = startTime;
                     newSchedule.endTime = endTime;
                     newSchedule.comment = comment;
+                    newSchedule.cell = `${columnsNames[i]}${data.indexOf(line) + 1}`;
                     await this.schedulesRepository.save(newSchedule);
                   }
                 }
