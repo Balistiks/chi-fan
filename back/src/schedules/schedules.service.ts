@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOneOptions, Repository } from 'typeorm';
+import { Between, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { Schedule } from './entities/schedule.entity';
 import { PointsService } from '../points/points.service';
@@ -105,7 +105,7 @@ export class SchedulesService implements OnApplicationBootstrap {
                   let startTime: string;
                   let endTime: string;
                   if (timeMatch) {
-                    const timeRange = timeMatch[0].split(' - ');
+                    const timeRange = timeMatch[0].replace(' ', '').split('-');
                     startTime = `${timeRange[0].split(':')[0].padStart(2, '0')}:${timeRange[0].split(':')[1].padStart(2, '0')}`;
                     endTime = `${timeRange[1].split(':')[0].padStart(2, '0')}:${timeRange[1].split(':')[1].padStart(2, '0')}`;
                   } else {
@@ -150,5 +150,9 @@ export class SchedulesService implements OnApplicationBootstrap {
 
   async findOne(options: FindOneOptions<Schedule>): Promise<Schedule> {
     return await this.schedulesRepository.findOne(options);
+  }
+
+  async find(options?: FindManyOptions<Schedule>): Promise<Schedule[]> {
+    return await this.schedulesRepository.find(options);
   }
 }
