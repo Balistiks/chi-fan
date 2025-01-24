@@ -99,15 +99,15 @@ export class SchedulesService implements OnApplicationBootstrap {
                 });
                 const comment = pointCodeAndComment[2];
                 const timeMatch = line[i].match(
-                  /\d{2}:\d{2}\s*-\s*\d{2}:\d{2}/,
+                  /\d{1,2}:\d{1,2}\s*-\s*\d{1,2}:\d{1,2}/,
                 );
                 if (point) {
                   let startTime: string;
                   let endTime: string;
                   if (timeMatch) {
                     const timeRange = timeMatch[0].split(' - ');
-                    startTime = timeRange[0];
-                    endTime = timeRange[1];
+                    startTime = `${timeRange[0].split(':')[0].padStart(2, '0')}:${timeRange[0].split(':')[1].padStart(2, '0')}`;
+                    endTime = `${timeRange[1].split(':')[0].padStart(2, '0')}:${timeRange[1].split(':')[1].padStart(2, '0')}`;
                   } else {
                     startTime = point.opening;
                     endTime = point.closing;
