@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Between, FindOneOptions, Repository } from 'typeorm';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { Schedule } from './entities/schedule.entity';
 import { PointsService } from '../points/points.service';
@@ -74,9 +74,10 @@ export class SchedulesService implements OnApplicationBootstrap {
     const today = new Date();
     for (const month of months) {
       try {
+        const listName = `${month} ${today.toLocaleDateString('ru', { year: '2-digit' })}`;
         const data = await this.googleSheetsService.getSheetData(
           '1Dipx58MDz-4UcWMncgr3N6NMn8_oUqFk3GaZpENNOXI',
-          `${month} ${today.toLocaleDateString('ru', { year: '2-digit' })}`,
+          listName,
         );
         const slicedData = data.slice(2);
         for (const line of slicedData) {
@@ -122,6 +123,7 @@ export class SchedulesService implements OnApplicationBootstrap {
                     schedule.startTime = startTime;
                     schedule.endTime = endTime;
                     schedule.comment = comment;
+                    schedule.textFromTable = line[i];
                     await this.schedulesRepository.save(schedule);
                   } else {
                     const newSchedule = new Schedule();
@@ -131,7 +133,8 @@ export class SchedulesService implements OnApplicationBootstrap {
                     newSchedule.startTime = startTime;
                     newSchedule.endTime = endTime;
                     newSchedule.comment = comment;
-                    newSchedule.cell = `${columnsNames[i]}${data.indexOf(line) + 1}`;
+                    newSchedule.cell = `${listName}!${columnsNames[i]}${data.indexOf(line) + 1}`;
+                    newSchedule.textFromTable = line[i];
                     await this.schedulesRepository.save(newSchedule);
                   }
                 }
@@ -143,5 +146,9 @@ export class SchedulesService implements OnApplicationBootstrap {
         Logger.error(e);
       }
     }
+  }
+
+  async findOne(options: FindOneOptions<Schedule>): Promise<Schedule> {
+    return await this.schedulesRepository.findOne(options);
   }
 }
