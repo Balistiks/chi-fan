@@ -35,7 +35,7 @@ const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
             <Employee
               key={schedule.id}
               name={schedule.name}
-              onClick={async () => await onClickEmployee()}
+              onClick={async () => await onClickEmployee(date, schedule)}
               className={styles.employee}
               width={'100%'}
               height={28}/>

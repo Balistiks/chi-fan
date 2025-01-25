@@ -16,7 +16,7 @@ routes = web.RouteTableDef()
 bot = Bot(conf.bot.token)
 
 
-@routes.post('/users/date')
+@routes.post('web/users/date')
 async def send_swap(request):
     auth = request.headers['Authorization']
     if auth.split(' ')[0] == 'Bearer':

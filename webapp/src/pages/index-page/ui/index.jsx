@@ -6,6 +6,8 @@ import {Button} from "../../../widgets/button";
 import SwitchModal from "../../../widgets/switch-modal/ui";
 import {CalendarWidget} from "../../../widgets/calendar-widget";
 import {useApi} from "../../../shared/lib/hooks/useApi.js";
+import axios from 'axios'
+import {token, WEB_URL} from "../../../shared/config";
 
 const IndexPage = () => {
   const [date, setDate] = useState({});
@@ -39,8 +41,12 @@ const IndexPage = () => {
     }
   }
 
-  const onClickEmployee = async () => {
+  const onClickEmployee = async (mainSchedule, scheduleForSwap) => {
     setSwitchModalOpen(false)
+    await axios.post(`${WEB_URL}/users/date`, {
+      mainSchedule: mainSchedule,
+      scheduleForSwap: scheduleForSwap,
+    }, { headers: { 'Authorization': `Bearer ${token}` }})
     setElementForTextModal(<p style={{ textAlign: "center", width: 236 }}>Запрос отправлен! Об ответе оповестим в чате с ботом 🔥</p>)
     setTextModalOpen(true)
   }
