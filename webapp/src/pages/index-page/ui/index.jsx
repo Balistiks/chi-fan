@@ -10,6 +10,8 @@ import axios from 'axios'
 import {token, WEB_URL} from "../../../shared/config";
 
 const IndexPage = () => {
+  const tg = window.Telegram.WebApp;
+
   const [date, setDate] = useState({});
   const [textModalOpen, setTextModalOpen] = useState(false)
   const [isSwitch, setIsSwitch] = useState(false);
@@ -57,7 +59,7 @@ const IndexPage = () => {
 
   const fetchData = async () => {
     try {
-      await fetchSchedules('schedules?tgId=1323', 'GET')
+      await fetchSchedules(`schedules?tgId=${tg.initDataUnsafe.user.id}`, 'GET')
     } catch (e) {
       console.log(e)
     }

@@ -4,10 +4,11 @@ import {useEffect} from "react";
 import {Employee} from "../../../entities/employee";
 
 const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
+  const tg = window.Telegram.WebApp;
   const {data: schedules, loading: schedulesLoading, fetchData: fetchSchedules} = useApi();
 
   const fetchData = async () => {
-    await fetchSchedules(`schedules/swap/1323/${date.date.toString()}`, 'GET')
+    await fetchSchedules(`schedules/swap/${tg.initDataUnsafe.user.id}/${date.date.toString()}`, 'GET')
   }
 
   useEffect(() => {
