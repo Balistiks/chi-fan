@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOneOptions, Repository } from 'typeorm';
+import { Between, FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { Schedule } from './entities/schedule.entity';
 import { PointsService } from '../points/points.service';
@@ -67,7 +67,7 @@ export class SchedulesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.fetchDataFromTablesSchedule(allMonths);
+    // await this.fetchDataFromTablesSchedule(allMonths);
   }
 
   async fetchDataFromTablesSchedule(months: string[]) {
@@ -150,5 +150,9 @@ export class SchedulesService implements OnApplicationBootstrap {
 
   async findOne(options: FindOneOptions<Schedule>): Promise<Schedule> {
     return await this.schedulesRepository.findOne(options);
+  }
+
+  async find(options?: FindManyOptions<Schedule>): Promise<Schedule[]> {
+    return await this.schedulesRepository.find(options);
   }
 }

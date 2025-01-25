@@ -11,6 +11,7 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+  app.enableCors();
   app.setGlobalPrefix('/api');
   app.useGlobalGuards(new AuthGuard());
   await app.listen(3000);
