@@ -41,7 +41,7 @@ async def send_swap(request):
                 text=f'С тобой хочет замениться:\n\n'
                       f'- {user_mainSchedule["name"]}\n- {formatted_date}\n- {user_mainSchedule['point']['name']}\n- '
                      f'{user_mainSchedule['startTime']} - {user_mainSchedule['endTime']}',
-                reply_markup=await keyboards.swap_keyboard(664945422, user_id_swap)
+                reply_markup=await keyboards.swap_keyboard(user_id_main, user_mainSchedule['id'], user_scheduleForSwap['id'])
             )
             return web.Response()
     return web.Response(status=403)
