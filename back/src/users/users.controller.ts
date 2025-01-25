@@ -2,7 +2,7 @@ import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Functional } from '../functionals/entities/functional.entity';
 import { FunctionalsService } from '../functionals/functionals.service';
-import {User} from "./entities/user.entity";
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import {UpdateUserDto} from "./dto/update-user.dto";
 
@@ -12,6 +12,13 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly functionalsService: FunctionalsService,
   ) {}
+
+  @Get('byName/:name')
+  async getByName(@Param('name') name: string): Promise<User> {
+    return await this.usersService.findOne({
+      where: { name: name },
+    });
+  }
 
   @Get(':tgId/isExist')
   async isExist(@Param('tgId') tgId: number): Promise<boolean> {

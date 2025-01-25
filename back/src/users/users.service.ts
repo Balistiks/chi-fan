@@ -16,7 +16,11 @@ export class UsersService {
     return await this.userRepository.findOne(options);
   }
 
-  async save(user: UpdateUserDto | CreateUserDto): Promise<User> {
+  async find(options?: FindManyOptions<User>): Promise<User[]> {
+    return await this.userRepository.find(options);
+  }
+
+  async save(user: CreateUserDto | UpdateUserDto): Promise<User> {
     return await this.userRepository.save(user);
   }
 }

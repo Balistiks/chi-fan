@@ -9,7 +9,7 @@ export class CashReport {
     @Column('varchar', { nullable: false })
     name: string;
 
-    @CreateDateColumn()
+    @Column('date')
     createAt: Date;
 
     @Column('boolean', { default: true })

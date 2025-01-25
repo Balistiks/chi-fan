@@ -27,4 +27,13 @@ export class GoogleSheetsService {
     });
     return response.data.values;
   }
+
+  async updateSheetData(spreadsheetId: string, range: string, value: string) {
+    return await this.sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { majorDimension: 'ROWS', values: [[value]] },
+    });
+  }
 }

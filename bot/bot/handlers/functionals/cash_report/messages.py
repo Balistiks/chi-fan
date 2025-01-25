@@ -47,6 +47,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
             if item['callback'] == data['callback_data']:
                 await cash_report_service.create({
                     'name': f"{item['name']}",
+                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                     'point': int(data['id_point']),
                 })
 
@@ -100,6 +101,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
             if item['callback'] == data['callback_data']:
                 await cash_report_service.create({
                     'name': f"{item['name']}",
+                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                     'point': int(data['id_point']),
                 })
         await message.answer_photo(
@@ -140,6 +142,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
             if item['callback'] == data['callback_data']:
                 await cash_report_service.create({
                     'name': f"{item['name']}",
+                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                     'point': int(data['id_point']),
                 })
         await message.answer_photo(
@@ -178,6 +181,7 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
             if item['callback'] == data['callback_data']:
                 await cash_report_service.create({
                     'name': f"{item['name']}",
+                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                     'point': int(data['id_point']),
                 })
         await message.answer_photo(
