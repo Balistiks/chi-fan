@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { SchedulesService } from './schedules.service';
 import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { Schedule } from './entities/schedule.entity';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
-import { createQueryBuilder, Not } from 'typeorm';
+import { Not } from 'typeorm';
 
 @Controller('schedules')
 export class SchedulesController {
