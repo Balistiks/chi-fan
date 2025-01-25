@@ -9,5 +9,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   tgId: number;
 
   @IsOptional()
-  role: Role;
+  role?: Role;
+
+  @IsOptional()
+  name?: string;
 }
