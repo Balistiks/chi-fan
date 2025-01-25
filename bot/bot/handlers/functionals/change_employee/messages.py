@@ -21,7 +21,8 @@ async def get_tg_id(message: types.Message, state: FSMContext, bot: Bot):
     user = await users_service.get_by_tg_id(int(message.text))
     await state.update_data(tg_id=message.text, name=user['name'])
 
-    await message.answer(
-        text=f'Пользователь:\n\n- {user['name']}\n- {user['role']['name']}\n\nВыберите новую роль',
+    await message.answer_photo(
+        photo=types.FSInputFile('./files/Выберите роль.png'),
+        caption=f'Пользователь:\n\n- {user['name']}\n- {user['role']['name']}\n\nВыберите новую роль',
         reply_markup=keyboards.functionals.change_employee.ROLES_KEYBOARD
     )
