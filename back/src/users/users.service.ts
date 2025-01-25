@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import {FindManyOptions, FindOneOptions, Repository} from 'typeorm';
 import {CreateUserDto} from "./dto/create-user.dto";
+import {UpdateUserDto} from "./dto/update-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,7 @@ export class UsersService {
     return await this.userRepository.findOne(options);
   }
 
-  async save(user: CreateUserDto): Promise<User> {
+  async save(user: UpdateUserDto | CreateUserDto): Promise<User> {
     return await this.userRepository.save(user);
   }
 }
