@@ -28,10 +28,9 @@ async def change_employee(callback: types.CallbackQuery, bot: Bot, state: FSMCon
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
     await state.set_state(ChangeEmployeeState.tg_id)
-    await users_service.update({
-        'tgId': int(data['tg_id']),
-        'role': int(callback.data.split('-')[1]),
-    })
+    user = await users_service.get_by_tg_id(int(data['tg_id']))
+    user['role'] = int(callback.data.split('-')[1])
+    await users_service.update(user)
 
     message = await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Роль изменена.png'),
