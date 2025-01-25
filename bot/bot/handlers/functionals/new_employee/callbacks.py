@@ -13,8 +13,8 @@ async def new_employee(callback: types.CallbackQuery, bot: Bot, state: FSMContex
 
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
-    await callback.message.answer(
-        text='Выберите роль',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выберите роль.png'),
         reply_markup=keyboards.functionals.new_employee.ROLES_KEYBOARD
     )
 
@@ -24,8 +24,8 @@ async def employee(callback: types.CallbackQuery, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     await state.update_data(role_id=callback.data.split('-')[1])
     await state.set_state(NewEmployeeState.tg_id)
-    message = await callback.message.answer(
-        text='Введите ID пользователя\n\nДля получения пользователю нужно зайти в бота - @getmyid_bot и написать /start',
+    message = await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/ID.png'),
         reply_markup=keyboards.functionals.new_employee.TO_ROLES_BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id)

@@ -21,8 +21,8 @@ async def get_tg_id(message: types.Message, state: FSMContext, bot: Bot):
     await state.update_data(tg_id=message.text)
     await state.set_state(NewEmployeeState.name)
 
-    message = await message.answer(
-        text='Введите Фамилию и Имя пользователя',
+    message = await message.answer_photo(
+        photo=types.FSInputFile('./files/ФИО.png'),
         reply_markup=await keyboards.functionals.new_employee.to_back_tg_id_keyboard(data['role_id'])
     )
     await state.update_data(last_message_id=message.message_id)
@@ -48,12 +48,12 @@ async def get_name(message: types.Message, state: FSMContext, bot: Bot):
             "role": data['role_id'],
         })
 
-        await message.answer(
-            text='Пользователь добавлен',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Пользователь добавлен.png'),
             reply_markup=keyboards.functionals.new_employee.TO_MAIN_MENU_KEYBOARD
         )
     else:
-        await message.answer(
-            text='Не получилось добавить пользователя, попробуйте снова',
+        await message.answer_photo(
+            photo=types.FSInputFile('./files/Не получилось пользователь.png'),
             reply_markup=keyboards.functionals.new_employee.REPLAY_KEYBOARD
         )
