@@ -18,8 +18,8 @@ async def cash_report(callback: types.CallbackQuery, bot: Bot, state: FSMContext
     date_today = datetime.now().strftime('%d.%m.%Y')
     date_yesterday = (datetime.now() - timedelta(days=1)).strftime('%d.%m.%Y')
 
-    await callback.message.answer(
-        text='Выберите день',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выберите день.png'),
         reply_markup=await keyboards.functionals.cash_report.date_keyboard(date_today, date_yesterday)
     )
 
