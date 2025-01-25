@@ -1,37 +1,40 @@
 import styles from './styles.module.scss'
 import TextModal from "../../../widgets/text-modal/ui";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Header} from "../../../widgets/header";
 import {Button} from "../../../widgets/button";
 import SwitchModal from "../../../widgets/switch-modal/ui";
-import axios from "axios";
 import {CalendarWidget} from "../../../widgets/calendar-widget";
-
-const dates = [
-  new Date(2024, 11, 1),
-  new Date(2024, 11, 15),
-  new Date(2024, 11, 30),
-  new Date(2024, 11, 10),
-]
+import {useApi} from "../../../shared/lib/hooks/useApi.js";
 
 const IndexPage = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState({});
   const [textModalOpen, setTextModalOpen] = useState(false)
   const [isSwitch, setIsSwitch] = useState(false);
   const [switchModalOpen, setSwitchModalOpen] = useState(false)
   const [elementForTextModal, setElementForTextModal] = useState(<></>);
 
+  const {data: schedules, loading: schedulesLoading, fetchData: fetchSchedules} = useApi();
+
   const openShiftModal = (value) => {
-    if (!!dates.find((item) => item.getTime() === value.getTime())) {
-      setDate(value)
-      setElementForTextModal(<p style={{ width: 209 }}>Часы работы: 12:00 - 00:00<br/>Точка: Тихая</p>)
+    const schedule = schedules.find((item) =>
+      new Date(item.date).setHours(0, 0, 0) === value.getTime())
+    if (schedule) {
+      setDate(schedule)
+      const startTime = `${schedule.startTime.split(':')[0]}:${schedule.startTime.split(':')[1]}`
+      const endTime = `${schedule.endTime.split(':')[0]}:${schedule.endTime.split(':')[1]}`
+      setElementForTextModal(
+        <p style={{ width: 209 }}>Часы работы: {startTime} - {endTime}<br/>Точка: {schedule.point.name}</p>
+      )
       setTextModalOpen(true)
     }
   }
 
-  const openSwitchModal = (value) => {
-    if (!!dates.find((item) => item.getTime() === value.getTime())) {
-      setDate(value)
+  const openSwitchModal = async (value) => {
+    const schedule = schedules.find((item) =>
+      new Date(item.date).setHours(0, 0, 0) === value.getTime())
+    if (schedule) {
+      setDate(schedule)
       setSwitchModalOpen(true)
     }
   }
@@ -42,15 +45,31 @@ const IndexPage = () => {
     setTextModalOpen(true)
   }
 
+  useEffect(() => {
+    fetchData()
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      await fetchSchedules('schedules?tgId=1323', 'GET')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   return (
     <>
       <Header>{isSwitch ? 'Выберите день' : 'Ваши смены'}</Header>
-      <CalendarWidget
-        className={styles.calendarHandler}
-        onClickDay={(value) => isSwitch ? openSwitchModal(value) : openShiftModal(value)}
-        tileClassName={({date}) =>
-          !!dates.find((item) => item.getTime() === date.getTime()) ? styles.day : null}
-      />
+      { !schedulesLoading &&  (
+        <CalendarWidget
+          className={styles.calendarHandler}
+          onClickDay={(value) => isSwitch ? openSwitchModal(value) : openShiftModal(value)}
+          tileClassName={({date}) =>
+            !!schedules.find((item) =>
+              new Date(item.date).setHours(0, 0, 0) === date.getTime()) ? styles.day : null
+          }
+        />
+      )}
       <Button
         className={styles.button}
         onClick={() => isSwitch ? setIsSwitch(false) : setIsSwitch(true)}

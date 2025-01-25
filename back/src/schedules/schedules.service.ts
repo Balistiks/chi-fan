@@ -67,7 +67,7 @@ export class SchedulesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.fetchDataFromTablesSchedule(allMonths);
+    // await this.fetchDataFromTablesSchedule(allMonths);
   }
 
   async fetchDataFromTablesSchedule(months: string[]) {
