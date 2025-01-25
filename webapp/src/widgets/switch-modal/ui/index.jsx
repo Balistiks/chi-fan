@@ -59,24 +59,6 @@ const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
           {!schedulesLoading && (
             <div className={styles.employees}>
               {getEmployees()}
-              {/*{Object.keys(getGroupedSchedules(schedules)).map((key, value) => console.log())}*/}
-              {/*{() => {*/}
-              {/*  console.log(Object.groupBy(schedules, ({point}) => point.name))*/}
-              {/*  return <div></div>*/}
-              {/*}}*/}
-              {/*{Object.groupBy(schedules, ({point}) => point.name)*/}
-              {/*  .map((point) => {*/}
-              {/*    return Object.groupBy(*/}
-              {/*      point,*/}
-              {/*      ({startTime, endTime}) => {*/}
-              {/*        return `${startTime.split(':')[0]}:${startTime.split(':')[1]} - ${endTime.split(':')[0]}:${endTime.split(':')[1]}`*/}
-              {/*      }*/}
-              {/*    )*/}
-              {/*  })*/}
-              {/*  .map((schedule) => {*/}
-              {/*  return <Employee key={schedule.id} name={schedule.name} onClick={async () => await onClickEmployee()} className={styles.employee}*/}
-              {/*                   width={'100%'} height={28}/>*/}
-              {/*})}*/}
             </div>
           )}
           <div className={styles.exit} onClick={() => setModalOpen(false)}>
