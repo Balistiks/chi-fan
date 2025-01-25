@@ -15,8 +15,8 @@ callbacks_router = Router()
 async def analitic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
-    await callback.message.answer(
-        text='Выручка',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выручка.png'),
         reply_markup=keyboards.functionals.analitic.CHOOSE_KEYBOARD
     )
 
@@ -62,8 +62,8 @@ async def get_analitic(callback: types.CallbackQuery, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     await state.update_data(point_id=callback.data.split(':')[1])
 
-    message = await callback.message.answer(
-        text='Выберите период',
+    message = await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выбепите период.png'),
         reply_markup=keyboards.functionals.analitic.DATES_KEYBOARD
     )
 
@@ -73,8 +73,8 @@ async def day(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     data = await state.get_data()
 
-    await callback.message.answer(
-        text='Выручка',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выберите день.png'),
         reply_markup=await keyboards.functionals.analitic.get_day_point_keyboard(point_id=data['point_id'])
     )
 
@@ -99,8 +99,8 @@ async def week(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
     data = await state.get_data()
 
-    await callback.message.answer(
-        text='Выручка',
+    await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Выручка.png'),
         reply_markup=await keyboards.functionals.analitic.get_week_point_keyboard(point_id=data['point_id'])
     )
 
