@@ -2,6 +2,7 @@ import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'type
 import { Shift } from '../../shifts/entities/shift.entity';
 import { User } from '../../users/entities/user.entity';
 import {CashReport} from "../../cash-reports/entitties/cash-report.entity";
+import { Revenue } from '../../revenues/entities/revenue.entity';
 
 @Entity()
 export class Point {
@@ -25,4 +26,7 @@ export class Point {
 
   @OneToMany(() => CashReport, (cashReport: CashReport)=> cashReport.point)
   cashReport: CashReport[];
+
+  @OneToMany(() => Revenue, (revenue: Revenue) => revenue.point)
+  revenues: Revenue[];
 }
