@@ -14,8 +14,8 @@ async def change_employee(callback: types.CallbackQuery, bot: Bot, state: FSMCon
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
 
     await state.set_state(ChangeEmployeeState.tg_id)
-    message = await callback.message.answer(
-        text='Введите ID пользователя\n\nДля получения пользователю нужно зайти в бота - @getmyid_bot и написать /start',
+    message = await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/ID.png'),
         reply_markup=keyboards.functionals.change_employee.TO_BACK_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id)
@@ -33,8 +33,8 @@ async def change_employee(callback: types.CallbackQuery, bot: Bot, state: FSMCon
         'role': int(callback.data.split('-')[1]),
     })
 
-    message = await callback.message.answer(
-        text='Роль изменена',
+    message = await callback.message.answer_photo(
+        photo=types.FSInputFile('./files/Роль изменена.png'),
         reply_markup=keyboards.functionals.change_employee.TO_MAIN_MENU_KEYBOARD
     )
     await state.update_data(last_message_id=message.message_id)
