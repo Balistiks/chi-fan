@@ -94,8 +94,6 @@ export class SchedulesController {
 
   @Patch(':month')
   async update(@Param('month') month: string) {
-    const data = await this.schedulesService.fetchDataFromTablesSchedule([
-      month,
-    ]);
+    await this.schedulesService.fetchDataFromTablesSchedule([month]);
   }
 }
