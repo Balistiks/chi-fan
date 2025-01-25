@@ -118,7 +118,7 @@ export class SchedulesService implements OnApplicationBootstrap {
                       name: line[0],
                     },
                   });
-                  if (schedule) {
+                  if (schedule != null) {
                     schedule.point = point;
                     schedule.startTime = startTime;
                     schedule.endTime = endTime;
