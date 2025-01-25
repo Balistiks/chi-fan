@@ -16,11 +16,16 @@ const SwitchModal = ({setModalOpen, date, onClickEmployee}) => {
   }, []);
 
   const getGroupedSchedules = (schedules) => {
-    return Object.groupBy(
-      schedules,
-      ({startTime, endTime, point}) =>
-        `${point.name}|${startTime.split(':')[0]}:${startTime.split(':')[1]} - ${endTime.split(':')[0]}:${endTime.split(':')[1]}`
-    );
+    return schedules.reduce((r, a) => {
+      r[`${a.point.name}|${a.startTime.split(':')[0]}:${a.startTime.split(':')[1]} - ${a.endTime.split(':')[0]}:${a.endTime.split(':')[1]}`] = r[`${a.point.name}|${a.startTime.split(':')[0]}:${a.startTime.split(':')[1]} - ${a.endTime.split(':')[0]}:${a.endTime.split(':')[1]}`] || [];
+      r[`${a.point.name}|${a.startTime.split(':')[0]}:${a.startTime.split(':')[1]} - ${a.endTime.split(':')[0]}:${a.endTime.split(':')[1]}`].push(a);
+      return r;
+    }, Object.create(null))
+    // return Object.groupBy(
+    //   schedules,
+    //   ({startTime, endTime, point}) =>
+    //     `${point.name}|${startTime.split(':')[0]}:${startTime.split(':')[1]} - ${endTime.split(':')[0]}:${endTime.split(':')[1]}`
+    // );
   }
 
   const getEmployees = () => {
