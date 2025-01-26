@@ -80,7 +80,7 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
             time = schedule['startTime']
             time_obj = datetime.strptime(time, "%H:%M:%S").time()
             datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-            new_time = datetime_obj - timedelta(minutes=2)
+            new_time = datetime_obj - timedelta(minutes=30)
             tg_id = user['tgId']
 
             apscheduler.add_job(
