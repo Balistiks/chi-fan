@@ -32,6 +32,7 @@ export class UsersController {
   async getByName(@Param('name') name: string): Promise<User> {
     return await this.usersService.findOne({
       where: { name: name },
+      relations: ['role'],
     });
   }
 

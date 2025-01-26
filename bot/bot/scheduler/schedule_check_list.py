@@ -4,7 +4,7 @@ from aiogram import Bot, types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 
-from bot.services import points_service
+from bot.services import points_service, users_service, schedules_service
 from bot import keyboards
 
 
@@ -69,22 +69,31 @@ list_closing_shift = [
 ]
 
 async def schedule_opening_shift(bot: Bot, apscheduler, storage):
-    points = await points_service.get_all()
+    today = datetime.today().date()
+    date_string = today.strftime('%Y-%m-%d')
+    schedules = await schedules_service.get_by_date(date=date_string)
 
-    for point in points:
-        time = point['opening']
-        time_obj = datetime.strptime(time, "%H:%M:%S").time()
-        datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-        new_time = datetime_obj - timedelta(minutes=30)
 
-        apscheduler.add_job(
-            send_opening_shift,
-            'date',
-            run_date=new_time,
-            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'storage': storage},
-            id=str(point['user']['tgId']),
-            replace_existing=True
-        )
+    for schedule in schedules:
+        user = await users_service.get_by_name(schedule['name'])
+        if user['role']['name'] == 'Менеджер':
+            time = schedule['point']['opening']
+            if time == schedule['startTime']:
+                time_obj = datetime.strptime(time, "%H:%M:%S").time()
+                datetime_obj = datetime.combine(datetime.now().date(), time_obj)
+                new_time = datetime_obj - timedelta(minutes=30)
+                tg_id = user['tgId']
+
+                apscheduler.add_job(
+                    send_opening_shift,
+                    'date',
+                    run_date=new_time,
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    id=str(tg_id),
+                    replace_existing=True
+                )
+            else:
+                continue
 
 
 async def send_opening_shift(bot: Bot, tgId: int, storage):
@@ -101,23 +110,31 @@ async def send_opening_shift(bot: Bot, tgId: int, storage):
     )
 
 async def schedule_closing_shift(bot: Bot, apscheduler, storage):
-    points = await points_service.get_all()
+    today = datetime.today().date()
+    date_string = today.strftime('%Y-%m-%d')
+    schedules = await schedules_service.get_by_date(date=date_string)
 
-    for point in points:
-        time = point['closing']
-        time_obj = datetime.strptime(time, "%H:%M:%S").time()
-        datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-        new_time = datetime_obj - timedelta(minutes=30)
+    for schedule in schedules:
+        user = await users_service.get_by_name(schedule['name'])
+        if user['role']['name'] == 'Менеджер':
+            time = schedule['point']['closing']
+            if time == schedule['endTime']:
+                time_obj = datetime.strptime(time, "%H:%M:%S").time()
+                datetime_obj = datetime.combine(datetime.now().date(), time_obj)
+                new_time = datetime_obj - timedelta(minutes=30)
+                tg_id = user['tgId']
 
 
-        apscheduler.add_job(
-            send_closing_shift,
-            'date',
-            run_date=new_time,
-            kwargs={'bot': bot, 'tgId': point['user']['tgId'], 'storage': storage},
-            id=point['user']['tgId'],
-            replace_existing=True
-        )
+                apscheduler.add_job(
+                    send_closing_shift,
+                    'date',
+                    run_date=new_time,
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    id=tg_id,
+                    replace_existing=True
+                )
+            else:
+                continue
 
 
 async def send_closing_shift(bot: Bot, tgId: int, storage):
