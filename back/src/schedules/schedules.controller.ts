@@ -92,7 +92,7 @@ export class SchedulesController {
       relations: ['point'],
     });
   }
-  
+
 
   @Patch(':firstId/swap/:secondId')
   async swap(
