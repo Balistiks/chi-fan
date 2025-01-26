@@ -76,7 +76,6 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
 
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
-        print(user)
         if user['role']['name'] == 'Менеджер':
             time = schedule['startTime']
             time_obj = datetime.strptime(time, "%H:%M:%S").time()
