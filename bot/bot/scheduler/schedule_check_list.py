@@ -77,22 +77,23 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
         if user['role']['name'] == 'Менеджер':
-            time = schedule['startTime']
-            time_obj = datetime.strptime(time, "%H:%M:%S").time()
-            datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-            new_time = datetime_obj - timedelta(minutes=30)
-            tg_id = user['tgId']
+            time = schedule['point']['opening']
+            if time == schedule['startTime']:
+                time_obj = datetime.strptime(time, "%H:%M:%S").time()
+                datetime_obj = datetime.combine(datetime.now().date(), time_obj)
+                new_time = datetime_obj - timedelta(minutes=2)
+                tg_id = user['tgId']
 
-            apscheduler.add_job(
-                send_opening_shift,
-                'date',
-                run_date=new_time,
-                kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
-                id=str(tg_id),
-                replace_existing=True
-            )
-        else:
-            continue
+                apscheduler.add_job(
+                    send_opening_shift,
+                    'date',
+                    run_date=new_time,
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    id=str(tg_id),
+                    replace_existing=True
+                )
+            else:
+                continue
 
 
 async def send_opening_shift(bot: Bot, tgId: int, storage):
@@ -116,23 +117,24 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
         if user['role']['name'] == 'Менеджер':
-            time = schedule['endTime']
-            time_obj = datetime.strptime(time, "%H:%M:%S").time()
-            datetime_obj = datetime.combine(datetime.now().date(), time_obj)
-            new_time = datetime_obj - timedelta(minutes=30)
-            tg_id = user['tgId']
+            time = schedule['point']['closing']
+            if time == schedule['endTime']:
+                time_obj = datetime.strptime(time, "%H:%M:%S").time()
+                datetime_obj = datetime.combine(datetime.now().date(), time_obj)
+                new_time = datetime_obj - timedelta(minutes=30)
+                tg_id = user['tgId']
 
 
-            apscheduler.add_job(
-                send_closing_shift,
-                'date',
-                run_date=new_time,
-                kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
-                id=tg_id,
-                replace_existing=True
-            )
-        else:
-            continue
+                apscheduler.add_job(
+                    send_closing_shift,
+                    'date',
+                    run_date=new_time,
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    id=tg_id,
+                    replace_existing=True
+                )
+            else:
+                continue
 
 
 async def send_closing_shift(bot: Bot, tgId: int, storage):
