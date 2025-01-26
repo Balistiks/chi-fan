@@ -57,13 +57,13 @@ async def save(user: dict) -> dict | None:
             return None
 
 
-async def update(user: dict) -> dict | None:
+async def update(user: dict, tg_id: int) -> dict | None:
     async with aiohttp.ClientSession(
         headers=headers
     ) as session:
         try:
             return await (await session.patch(
-                f'{url}/users',
+                f'{url}/users/{tg_id}',
                 data=user
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
