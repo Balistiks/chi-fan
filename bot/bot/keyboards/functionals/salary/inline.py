@@ -4,40 +4,40 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 SALARY_MOUNTHS_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text='Январь', callback_data='salary_Январь'),
+            InlineKeyboardButton(text='Январь', callback_data='salary_1'),
         ],
         [
-            InlineKeyboardButton(text='Февраль', callback_data='salary_Февраль'),
+            InlineKeyboardButton(text='Февраль', callback_data='salary_2'),
         ],
         [
-            InlineKeyboardButton(text='Март', callback_data='salary_Март'),
+            InlineKeyboardButton(text='Март', callback_data='salary_3'),
         ],
         [
-            InlineKeyboardButton(text='Апрель', callback_data='salary_Апрель'),
+            InlineKeyboardButton(text='Апрель', callback_data='salary_4'),
         ],
         [
-            InlineKeyboardButton(text='Май', callback_data='salary_Май'),
+            InlineKeyboardButton(text='Май', callback_data='salary_5'),
         ],
         [
-            InlineKeyboardButton(text='Июнь', callback_data='salary_Июнь'),
+            InlineKeyboardButton(text='Июнь', callback_data='salary_6'),
         ],
         [
-            InlineKeyboardButton(text='Июль', callback_data='salary_Июль'),
+            InlineKeyboardButton(text='Июль', callback_data='salary_7'),
         ],
         [
-            InlineKeyboardButton(text='Август', callback_data='salary_Август'),
+            InlineKeyboardButton(text='Август', callback_data='salary_8'),
         ],
         [
-            InlineKeyboardButton(text='Сентябрь', callback_data='salary_Сентябрь'),
+            InlineKeyboardButton(text='Сентябрь', callback_data='salary_9'),
         ],
         [
-            InlineKeyboardButton(text='Октябрь', callback_data='salary_Октябрь'),
+            InlineKeyboardButton(text='Октябрь', callback_data='salary_10'),
         ],
         [
-            InlineKeyboardButton(text='Ноябрь', callback_data='salary_Ноябрь'),
+            InlineKeyboardButton(text='Ноябрь', callback_data='salary_11'),
         ],
         [
-            InlineKeyboardButton(text='Декабрь', callback_data='salary_Декабрь'),
+            InlineKeyboardButton(text='Декабрь', callback_data='salary_12'),
         ],
         [
             InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu'),
@@ -67,24 +67,23 @@ BACK_DETAILING_KEYBOARD = InlineKeyboardMarkup(
     ]
 )
 
-BACK_DETAILING_BY_DAYS_KEYBOARD = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text='Назад', callback_data='salary_'),
-        ],
-    ]
-)
+async def back_by_days_keyboard(month: str) -> InlineKeyboardMarkup:
+    buttons = []
+
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'salary_{month}')])
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
 
 
-async def salary_points_keyboard(points: list, mounth: str) -> InlineKeyboardMarkup:
+async def salary_points_keyboard(points: list, month: str) -> InlineKeyboardMarkup:
     buttons = []
 
     for point in points:
-        button = InlineKeyboardButton(text=point['name'], callback_data=f'salary-point_{point['id']}')
+        button = InlineKeyboardButton(text=point, callback_data=f'salary-point_{point}')
         buttons.append([button])
 
-    buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'salary_{mounth}')])
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data=f'salary_{month}')])
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-
     return keyboard

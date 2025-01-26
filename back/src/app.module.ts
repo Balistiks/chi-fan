@@ -13,6 +13,14 @@ import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { CheckListsModule } from './check_lists/check_lists.module';
 import { CheckListAnswersModule } from './check_list-answers/check_list-answers.module';
+import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
+import { SalariesModule } from './salaries/salaries.module';
+// import { AdjustmentsModule } from './adjustments/adjustments.module';
+import { NamesModule } from './names/names.module';
+import { CashReportsModule } from './cash-reports/cash-reports.module';
+import { RevenuesModule } from './revenues/revenues.module';
+import { AnalyticsModule } from './analytics/analytics.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -33,6 +41,14 @@ import { CheckListAnswersModule } from './check_list-answers/check_list-answers.
     ShiftsModule,
     CheckListsModule,
     CheckListAnswersModule,
+    GoogleSheetsModule,
+    SalariesModule,
+    NamesModule,
+    CashReportsModule,
+    RevenuesModule,
+    AnalyticsModule,
+    SchedulesModule,
+    // AdjustmentsModule,
   ],
   controllers: [],
   providers: [],

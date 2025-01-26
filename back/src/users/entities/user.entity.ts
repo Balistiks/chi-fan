@@ -1,6 +1,6 @@
-import {Column, Entity, ManyToOne, OneToOne, PrimaryColumn} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
-import {Point} from "../../points/entities/point.entity";
+import { Point } from '../../points/entities/point.entity';
 
 @Entity()
 export class User {
@@ -13,6 +13,6 @@ export class User {
   @ManyToOne(() => Role, (role: Role) => role.users)
   role: Role;
 
-  @OneToOne(() => Point, (point: Point) => point.user)
+  @ManyToOne(() => Point, (point: Point) => point.users)
   point: Point;
 }

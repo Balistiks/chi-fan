@@ -5,19 +5,23 @@ import {IndexPage} from "../pages/index-page";
 import './styles/normalizez.scss'
 import './styles/reset.scss'
 import './styles/fonts.scss'
-import {Header} from "../widgets/header";
+import {PartTimeWorkPage} from "../pages/part-time-work-page";
+import './styles/styes.scss'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <IndexPage />
+  },
+  {
+    path: '/part-time-work',
+    element: <PartTimeWorkPage />
   }
 ])
 
 const App = () => {
   return (
     <>
-      <Header />
       <Suspense fallback={<p>Загрузка...</p>}>
         <RouterProvider router={router} />
       </Suspense>

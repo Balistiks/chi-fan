@@ -1,0 +1,50 @@
+.darkBg {
+  backdrop-filter: blur(2px);
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  &_closed {
+    display: none;
+  }
+}
+
+.centered {
+  position: fixed;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal {
+  z-index: 100;
+  position: relative;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: -7px 8px 0 0 rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  p {
+    font-size: 17px;
+    font-family: 'GT Easti Display', serif;
+    font-weight: 500;
+    color: #EC2443;
+  }
+}
+
+.exit {
+  padding: 5px;
+  position: absolute;
+  background-color: #EC2443;
+  right: -7px;
+  top: -11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+}

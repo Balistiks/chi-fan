@@ -30,3 +30,53 @@ async def get_functionals(tgId: int) -> dict | None:
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
             return None
+
+
+async def get_by_tg_id(tg_id: int) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.get(
+                f'{url}/users/{tg_id}'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
+
+
+async def get_by_name(name: str) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.get(
+                f'{url}/users/byName/{name}'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
+
+
+async def save(user: dict) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.post(
+                f'{url}/users',
+                data=user
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
+
+
+async def update(user: dict, tg_id: int) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.patch(
+                f'{url}/users/{tg_id}',
+                data=user
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None

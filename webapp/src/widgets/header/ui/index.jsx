@@ -1,10 +1,10 @@
 import styles from './styles.module.scss'
 
-const Header = () => {
+const Header = ({children}) => {
   return (
-    <header>
-      <h1 className={styles.title}>Смены</h1>
-    </header>
+    <div className={styles.header}>
+      <h1 className={styles.title}>{children}</h1>
+    </div>
   )
 }
 

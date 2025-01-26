@@ -7,9 +7,13 @@ export default defineConfig(() => {
       outDir: 'build',
     },
     plugins: [react()],
+    define: {
+      'process.env.SECRET_TOKEN': JSON.stringify(process.env.SECRET_TOKEN),
+      'proccess.env.URL': JSON.stringify(process.env.URL)
+    },
     server: {
       host: true,
-      port: 8080
+      port: 8081
     }
   };
 });

@@ -1,0 +1,13 @@
+.employee {
+  background-color: #EC2443;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  &__name {
+    font-family: 'GT Easti Display', serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: white;
+  }
+}
