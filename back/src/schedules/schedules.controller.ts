@@ -4,7 +4,9 @@ import { GoogleSheetsService } from '../google-sheets/google-sheets.service';
 import { Schedule } from './entities/schedule.entity';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
-import { Not } from 'typeorm';
+import { Between, Not } from "typeorm";
+import { Shift } from "../shifts/entities/shift.entity";
+import { endOfMonth } from "date-fns";
 
 @Controller('schedules')
 export class SchedulesController {
@@ -61,6 +63,36 @@ export class SchedulesController {
       relations: ['point'],
     });
   }
+
+  @Get('check-list/:date')
+  async getByYearAndMonth(
+    @Param('date') dateString: string,
+  ): Promise<Schedule[]> {
+    const date = new Date(dateString);
+    const startOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      0,
+      0,
+      0,
+    );
+    const endOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      23,
+      59,
+      59,
+    );
+    return await this.schedulesService.find({
+      where: {
+        date: Between(startOfDay, endOfDay),
+      },
+      relations: ['point'],
+    });
+  }
+  
 
   @Patch(':firstId/swap/:secondId')
   async swap(

@@ -17,7 +17,7 @@ export class PointsController {
   @Get('all')
   async getPoints(): Promise<Point[]> {
     return await this.pointsService.getAll({
-      relations: ['user', 'user.role'],
+      relations: ['users', 'users.role', 'schedules'],
     });
   }
 

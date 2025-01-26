@@ -13,3 +13,15 @@ async def swap(first_id: int, second_id: int) -> dict | None:
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
             return None
+
+
+async def get_by_date(date: str) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.get(
+                f'{url}/schedules/check-list/{date}'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
