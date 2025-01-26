@@ -7,7 +7,7 @@ export class User {
   @PrimaryColumn('bigint')
   tgId: number;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
   @ManyToOne(() => Role, (role: Role) => role.users)
