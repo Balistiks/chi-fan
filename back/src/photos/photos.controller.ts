@@ -1,8 +1,9 @@
-import { Controller, Get, Header, Param, Res } from '@nestjs/common';
+import {Body, Controller, Get, Header, Param, Post, Res, UploadedFile, UseInterceptors} from '@nestjs/common';
 import { PhotosService } from './photos.service';
 import { join } from 'path';
 import { createReadStream } from 'fs';
 import { Response } from 'express';
+
 
 @Controller('photos')
 export class PhotosController {
@@ -20,4 +21,5 @@ export class PhotosController {
     });
     fileStream.pipe(res);
   }
+
 }

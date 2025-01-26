@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot.misc import functions
 from bot.states import CheckList
+from bot.services import check_list_answers_service
 
 from bot import keyboards
 
@@ -56,8 +57,30 @@ async def check_list_confirm(callback: types.CallbackQuery, bot: Bot, state: FSM
     data = await state.get_data()
     check_list_index = data.get('check_list_index', 0)
     check_list_shift = data.get('check_list_shift', [])
+    point_id = data['pointId']
+    photo = data.get('photo', None)
 
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
+
+    if photo is None:
+        await check_list_answers_service.create({
+            'text': f'{check_list_shift[check_list_index]}',
+            'done': True,
+            'check_list': str(data['check_list_id']),
+        })
+    else:
+        file = await callback.message.bot.get_file(photo)
+        file_path = file.file_path
+        file_photo = await callback.message.bot.download_file(file_path)
+
+        await check_list_answers_service.create({
+            'text': f'{check_list_shift[check_list_index]}',
+            'done': 'true',
+            'check_list': str(data['check_list_id']),
+            'photo': file_photo,
+        })
+        await state.update_data(photo=None)
+
     if check_list_index < len(check_list_shift):
         check_list_shift.pop(check_list_index)
 

@@ -1,5 +1,6 @@
 import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Shift } from '../../shifts/entities/shift.entity';
+import {Check_list} from "../../check_lists/entities/check_list.entity";
 import { User } from '../../users/entities/user.entity';
 import {CashReport} from "../../cash-reports/entitties/cash-report.entity";
 import { Revenue } from '../../revenues/entities/revenue.entity';
@@ -27,6 +28,10 @@ export class Point {
 
   @OneToMany(() => Shift, (shift: Shift) => shift.point)
   shifts: Shift[];
+
+
+  @OneToMany(() => Check_list, (check_list: Check_list) => check_list.point)
+  check_lists: Check_list[];
 
   @OneToMany(() => User, (user: User) => user.point)
   users: User[];

@@ -11,6 +11,8 @@ import { dataSourceOptions } from '../db/data-source';
 import { PointsModule } from './points/points.module';
 import { EmployeesModule } from './employees/employees.module';
 import { ShiftsModule } from './shifts/shifts.module';
+import { CheckListsModule } from './check_lists/check_lists.module';
+import { CheckListAnswersModule } from './check_list-answers/check_list-answers.module';
 import { GoogleSheetsModule } from './google-sheets/google-sheets.module';
 import { SalariesModule } from './salaries/salaries.module';
 // import { AdjustmentsModule } from './adjustments/adjustments.module';
@@ -37,6 +39,8 @@ import { SchedulesModule } from './schedules/schedules.module';
     PointsModule,
     EmployeesModule,
     ShiftsModule,
+    CheckListsModule,
+    CheckListAnswersModule,
     GoogleSheetsModule,
     SalariesModule,
     NamesModule,

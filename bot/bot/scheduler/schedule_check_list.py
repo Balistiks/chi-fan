@@ -4,7 +4,8 @@ from aiogram import Bot, types
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 
-from bot.services import points_service, users_service, schedules_service
+from bot.services import points_service, users_service, schedules_service, check_lists_service
+
 from bot import keyboards
 
 
@@ -76,7 +77,7 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
 
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
-        if user['role']['name'] == 'Менеджер':
+        if user['role']['name'] == 'Менеджер смены/кассир/инструктор':
             time = schedule['point']['opening']
             if time == schedule['startTime']:
                 time_obj = datetime.strptime(time, "%H:%M:%S").time()
@@ -96,13 +97,16 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
                 continue
 
 
-async def send_opening_shift(bot: Bot, tgId: int, storage):
+async def send_opening_shift(bot: Bot, tgId: int, pointId, storage):
     state = FSMContext(
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие')
-
+    check_list = await check_lists_service.create({
+        'name': 'Чек-лист - открытие',
+        'point': pointId,
+    })
+    await state.update_data(check_list_shift=list_opening_shift, check_list_text='Чек-лист - открытие', pointId=pointId, check_list_id=check_list['id'])
     await bot.send_message(
         chat_id=tgId,
         text='Чек-лист - открытие',
@@ -116,7 +120,7 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
 
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
-        if user['role']['name'] == 'Менеджер':
+        if user['role']['name'] == 'Менеджер смены/кассир/инструктор':
             time = schedule['point']['closing']
             if time == schedule['endTime']:
                 time_obj = datetime.strptime(time, "%H:%M:%S").time()
@@ -137,12 +141,16 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
                 continue
 
 
-async def send_closing_shift(bot: Bot, tgId: int, storage):
+async def send_closing_shift(bot: Bot, tgId: int, pointId, storage):
     state = FSMContext(
         storage=storage,
         key=StorageKey(chat_id=tgId, user_id=tgId, bot_id=bot.id)
     )
-    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие')
+    check_list = await check_lists_service.create({
+        'name': 'Чек-лист - закрытие',
+        'point': pointId,
+    })
+    await state.update_data(check_list_shift=list_closing_shift, check_list_text='Чек-лист - закрытие', pointId=pointId, check_list_id=check_list['id'])
 
     await bot.send_message(
         chat_id=tgId,
