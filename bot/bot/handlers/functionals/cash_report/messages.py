@@ -104,6 +104,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
                     'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                     'point': int(data['id_point']),
                 })
+        await state.update_data(current_page=0)
         await message.answer_photo(
              photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
             reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,

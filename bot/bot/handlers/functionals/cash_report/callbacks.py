@@ -48,7 +48,7 @@ async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext)
 
     point = await points_service.get_by_name(callback.data.split(':')[1])
 
-    await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point['id'])
+    await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point['id'], current_page=0)
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
@@ -96,7 +96,7 @@ async def checks_file(callback: types.CallbackQuery, bot: Bot, state: FSMContext
     await state.set_state(CashReportState.checks_file)
     await state.update_data(id=callback.data.split(':')[1], callback_data=callback.data)
     message = await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Добавление файла.png'),
+        photo=types.FSInputFile('./files/фото.png'),
         reply_markup=await keyboards.functionals.cash_report.back_keyboard(point_name=data['point_name'])
     )
     await state.update_data(last_message_id=message.message_id, recount_data=callback.data.split(':')[1])
