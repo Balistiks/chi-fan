@@ -26,39 +26,47 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
         media = MediaIoBaseUpload(video, mimetype='video/mp4')
         parent = '1R45RY17a1ZllY8IR_s4HcTmdSifScCzh' \
             if data['recount_data'] == 'K' else '1biqIsDTb9cXCdmZrlmZ1hJv05QA9_Vtp'
-        resp = files.create(
-            body={
-                'name': f'{data["date"]}.mp4',
-                'parents': [parent]
-            },
-            media_body=media,
-            fields='id'
-        ).execute()
-        sheet.values().update(
-            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{data['point_name']}!{data['recount_data']}{day + 1}",
-            valueInputOption="USER_ENTERED",
-            body={
-                'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
-            }
-        ).execute()
-        items = keyboards.functionals.cash_report.data_cash_report_keyboard
-        for item in items:
-            if item['callback'] == data['callback_data']:
-                await cash_report_service.create({
-                    'name': f"{item['name']}",
-                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
-                    'point': int(data['id_point']),
-                })
+        try:
+            resp = files.create(
+                body={
+                    'name': f'{data["date"]}.mp4',
+                    'parents': [parent]
+                },
+                media_body=media,
+                fields='id'
+            ).execute()
+            sheet.values().update(
+                spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+                range=f"{data['point_name']}!{data['recount_data']}{day + 1}",
+                valueInputOption="USER_ENTERED",
+                body={
+                    'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
+                }
+            ).execute()
+            items = keyboards.functionals.cash_report.data_cash_report_keyboard
+            for item in items:
+                if item['callback'] == data['callback_data']:
+                    await cash_report_service.create({
+                        'name': f"{item['name']}",
+                        'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
+                        'point': int(data['id_point']),
+                    })
 
-        await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
-                                                                                      day=data['day'],
-                                                                                      mouth=data['mouth'],
-                                                                                      year=data['year'],
-                                                                                      point_name=data['point_name'])
-        )
+            await message.answer_photo(
+                photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                          day=data['day'],
+                                                                                          mouth=data['mouth'],
+                                                                                          year=data['year'],
+                                                                                          point_name=data['point_name'])
+            )
+        except Exception as e:
+            print(e)
+            await message.answer(
+                'Произошла ошибка 🚫\n'
+                '\nПопробуйте снова',
+                reply_markup=await keyboards.functionals.cash_report.back_keyboard(data['point_name'])
+            )
     else:
         await state.set_state(CashReportState.recount)
         message = await message.answer_photo(
@@ -80,39 +88,47 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
         media = MediaIoBaseUpload(document, mimetype='image/png')
         parent = '1XIzUDEx_RhkrfRPzfCXdkClmDEQ3aST-'
         file_name = f'{data["date"]}.png'
-        resp = files.create(
-            body={
-                'name': file_name,
-                'parents': [parent]
-            },
-            media_body=media,
-            fields='id'
-        ).execute()
-        sheet.values().update(
-            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{data['point_name']}!{data['recount_data']}{datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday + 1}",
-            valueInputOption="USER_ENTERED",
-            body={
-                'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
-            }
-        ).execute()
-        items = keyboards.functionals.cash_report.data_cash_report_keyboard
-        for item in items:
-            if item['callback'] == data['callback_data']:
-                await cash_report_service.create({
-                    'name': f"{item['name']}",
-                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
-                    'point': int(data['id_point']),
-                })
-        await state.update_data(current_page=0)
-        await message.answer_photo(
-             photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
-                                                                                      day=data['day'],
-                                                                                      mouth=data['mouth'],
-                                                                                      year=data['year'],
-                                                                                      point_name=data['point_name'])
-        )
+        try:
+            resp = files.create(
+                body={
+                    'name': file_name,
+                    'parents': [parent]
+                },
+                media_body=media,
+                fields='id'
+            ).execute()
+            sheet.values().update(
+                spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+                range=f"{data['point_name']}!{data['recount_data']}{datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday + 1}",
+                valueInputOption="USER_ENTERED",
+                body={
+                    'values': [[f'https://drive.google.com/file/d/{resp["id"]}']]
+                }
+            ).execute()
+            items = keyboards.functionals.cash_report.data_cash_report_keyboard
+            for item in items:
+                if item['callback'] == data['callback_data']:
+                    await cash_report_service.create({
+                        'name': f"{item['name']}",
+                        'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
+                        'point': int(data['id_point']),
+                    })
+            await state.update_data(current_page=0)
+            await message.answer_photo(
+                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                          day=data['day'],
+                                                                                          mouth=data['mouth'],
+                                                                                          year=data['year'],
+                                                                                          point_name=data['point_name'])
+            )
+        except Exception as e:
+            print(e)
+            await message.answer(
+                'Произошла ошибка 🚫\n'
+                '\nПопробуйте снова',
+                reply_markup=await keyboards.functionals.cash_report.back_keyboard(data['point_name'])
+            )
     else:
         await state.set_state(CashReportState.checks_file)
         message = await message.answer_photo(
@@ -130,30 +146,38 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
     await message.bot.delete_message(chat_id=message.chat.id, message_id=data['last_message_id'])
     if message.text.isdigit():
         day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
-        sheet.values().update(
-            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
-            valueInputOption="USER_ENTERED",
-            body={
-                'values': [[int(message.text)]]
-            }
-        ).execute()
-        items = keyboards.functionals.cash_report.data_cash_report_keyboard
-        for item in items:
-            if item['callback'] == data['callback_data']:
-                await cash_report_service.create({
-                    'name': f"{item['name']}",
-                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
-                    'point': int(data['id_point']),
-                })
-        await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
-                                                                                      day=data['day'],
-                                                                                      mouth=data['mouth'],
-                                                                                      year=data['year'],
-                                                                                      point_name=data['point_name'])
-        )
+        try:
+            sheet.values().update(
+                spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+                range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
+                valueInputOption="USER_ENTERED",
+                body={
+                    'values': [[int(message.text)]]
+                }
+            ).execute()
+            items = keyboards.functionals.cash_report.data_cash_report_keyboard
+            for item in items:
+                if item['callback'] == data['callback_data']:
+                    await cash_report_service.create({
+                        'name': f"{item['name']}",
+                        'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
+                        'point': int(data['id_point']),
+                    })
+            await message.answer_photo(
+                photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                          day=data['day'],
+                                                                                          mouth=data['mouth'],
+                                                                                          year=data['year'],
+                                                                                          point_name=data['point_name'])
+            )
+        except Exception as e:
+            print(e)
+            await message.answer(
+                'Произошла ошибка 🚫\n'
+                '\nПопробуйте снова',
+                reply_markup=await keyboards.functionals.cash_report.back_keyboard(data['point_name'])
+            )
     else:
         await state.set_state(CashReportState.enter_sum)
         message = await message.answer_photo(
@@ -169,30 +193,38 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
     await message.bot.delete_message(chat_id=message.chat.id, message_id=data['last_message_id'])
     if message.text:
         day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
-        sheet.values().update(
-            spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
-            range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
-            valueInputOption="USER_ENTERED",
-            body={
-                'values': [[message.text]]
-            }
-        ).execute()
-        items = keyboards.functionals.cash_report.data_cash_report_keyboard
-        for item in items:
-            if item['callback'] == data['callback_data']:
-                await cash_report_service.create({
-                    'name': f"{item['name']}",
-                    'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
-                    'point': int(data['id_point']),
-                })
-        await message.answer_photo(
-            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
-                                                                                      day=data['day'],
-                                                                                      mouth=data['mouth'],
-                                                                                      year=data['year'],
-                                                                                      point_name=data['point_name'])
-        )
+        try:
+            sheet.values().update(
+                spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+                range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
+                valueInputOption="USER_ENTERED",
+                body={
+                    'values': [[message.text]]
+                }
+            ).execute()
+            items = keyboards.functionals.cash_report.data_cash_report_keyboard
+            for item in items:
+                if item['callback'] == data['callback_data']:
+                    await cash_report_service.create({
+                        'name': f"{item['name']}",
+                        'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
+                        'point': int(data['id_point']),
+                    })
+            await message.answer_photo(
+                photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                          day=data['day'],
+                                                                                          mouth=data['mouth'],
+                                                                                          year=data['year'],
+                                                                                          point_name=data['point_name'])
+            )
+        except Exception as e:
+            print(e)
+            await message.answer(
+                'Произошла ошибка 🚫\n'
+                '\nПопробуйте снова',
+                reply_markup=await keyboards.functionals.cash_report.back_keyboard(data['point_name'])
+            )
     else:
         await state.set_state(CashReportState.enter_sum)
         message = await message.answer_photo(
