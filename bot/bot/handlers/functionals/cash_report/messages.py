@@ -52,6 +52,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
+            await state.update_data(current_page=0)
             await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
@@ -167,6 +168,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
+            await state.update_data(current_page=0)
             await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
