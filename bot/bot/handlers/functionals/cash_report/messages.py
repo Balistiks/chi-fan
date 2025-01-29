@@ -5,7 +5,7 @@ from aiogram import Router, types, Bot
 from aiogram.fsm.context import FSMContext
 from googleapiclient.http import MediaIoBaseUpload
 
-from bot.misc import functions
+from bot.misc import functions, delete_message
 from bot.services import users_service, cash_report_service
 from bot.states import CashReportState
 from bot import keyboards
@@ -27,6 +27,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
         parent = '1R45RY17a1ZllY8IR_s4HcTmdSifScCzh' \
             if data['recount_data'] == 'K' else '1biqIsDTb9cXCdmZrlmZ1hJv05QA9_Vtp'
         try:
+            download_message = await message.answer('Загрузка 🔄')
             resp = files.create(
                 body={
                     'name': f'{data["date"]}.mp4',
@@ -51,7 +52,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
-
+            await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
                 reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
@@ -89,6 +90,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
         parent = '1XIzUDEx_RhkrfRPzfCXdkClmDEQ3aST-'
         file_name = f'{data["date"]}.png'
         try:
+            download_message = await message.answer('Загрузка 🔄')
             resp = files.create(
                 body={
                     'name': file_name,
@@ -114,6 +116,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
                         'point': int(data['id_point']),
                     })
             await state.update_data(current_page=0)
+            await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                  photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
                 reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
@@ -147,6 +150,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
     if message.text.isdigit():
         day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         try:
+            download_message = await message.answer('Загрузка 🔄')
             sheet.values().update(
                 spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
                 range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
@@ -163,6 +167,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
+            await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
                 reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
@@ -194,6 +199,7 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
     if message.text:
         day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         try:
+            download_message = await message.answer('Загрузка 🔄')
             sheet.values().update(
                 spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
                 range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
@@ -210,6 +216,7 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
+            await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
                 reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
