@@ -89,7 +89,7 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
                     send_opening_shift,
                     'date',
                     run_date=new_time,
-                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage, 'pointId': schedule['point']['id']},
                     id=str(tg_id),
                     replace_existing=True
                 )
@@ -133,7 +133,7 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
                     send_closing_shift,
                     'date',
                     run_date=new_time,
-                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage},
+                    kwargs={'bot': bot, 'tgId': tg_id, 'storage': storage, 'pointId': schedule['point']['id']},
                     id=tg_id,
                     replace_existing=True
                 )

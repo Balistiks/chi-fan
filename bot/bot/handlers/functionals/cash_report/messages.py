@@ -216,6 +216,7 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
                         'createAt': datetime.strptime(data['date'], '%d.%m.%Y').isoformat(),
                         'point': int(data['id_point']),
                     })
+            await state.update_data(current_page=0)
             await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
