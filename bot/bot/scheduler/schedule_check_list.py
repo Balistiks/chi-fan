@@ -74,10 +74,9 @@ async def schedule_opening_shift(bot: Bot, apscheduler, storage):
     date_string = today.strftime('%Y-%m-%d')
     schedules = await schedules_service.get_by_date(date=date_string)
 
-
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
-        if user['role']['name'] == 'Менеджер смены/кассир/инструктор':
+        if (user and user is not None) and user['role']['name'] == 'Менеджер смены/кассир/инструктор':
             time = schedule['point']['opening']
             if time == schedule['startTime']:
                 time_obj = datetime.strptime(time, "%H:%M:%S").time()
@@ -113,6 +112,7 @@ async def send_opening_shift(bot: Bot, tgId: int, pointId, storage):
         reply_markup=await keyboards.check_list.check_list_keyboard(list_opening_shift, 0)
     )
 
+
 async def schedule_closing_shift(bot: Bot, apscheduler, storage):
     today = datetime.today().date()
     date_string = today.strftime('%Y-%m-%d')
@@ -120,14 +120,13 @@ async def schedule_closing_shift(bot: Bot, apscheduler, storage):
 
     for schedule in schedules:
         user = await users_service.get_by_name(schedule['name'])
-        if user['role']['name'] == 'Менеджер смены/кассир/инструктор':
+        if (user and user is not None) and user['role']['name'] == 'Менеджер смены/кассир/инструктор':
             time = schedule['point']['closing']
             if time == schedule['endTime']:
                 time_obj = datetime.strptime(time, "%H:%M:%S").time()
                 datetime_obj = datetime.combine(datetime.now().date(), time_obj)
                 new_time = datetime_obj - timedelta(minutes=30)
                 tg_id = user['tgId']
-
 
                 apscheduler.add_job(
                     send_closing_shift,
