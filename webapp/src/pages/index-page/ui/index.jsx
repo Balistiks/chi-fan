@@ -72,9 +72,8 @@ const IndexPage = () => {
         <CalendarWidget
           className={styles.calendarHandler}
           onClickDay={(value) => isSwitch ? openSwitchModal(value) : openShiftModal(value)}
-          tileClassName={({date}) =>
-            !!schedules.find((item) =>
-              new Date(item.date).setHours(0, 0, 0) === date.getTime()) ? styles.day : null
+          tileClassName={({date}) => schedules !== undefined ? !!schedules.find((item) =>
+            new Date(item.date).setHours(0, 0, 0) === date.getTime()) ? styles.day : null : null
           }
         />
       )}

@@ -120,7 +120,7 @@ export class SchedulesController {
     firstSchedule.textFromTable = secondText;
     secondSchedule.textFromTable = firstText;
     await this.schedulesService.fetchDataFromTablesSchedule([
-      firstSchedule.cell.split('!')[0],
+      firstSchedule.cell.split('!')[0].split(' ')[0],
     ]);
   }
 
