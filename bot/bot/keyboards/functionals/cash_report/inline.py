@@ -57,7 +57,7 @@ data_cash_report_keyboard = [
     },
     {
         'name': 'Расходы',
-        'callback': 'enter_sum:Q'
+        'callback': 'enter_sum:P'
     },
     {
         'name': 'Комментарий к расходам',
