@@ -66,6 +66,8 @@ export class SalariesService implements OnApplicationBootstrap {
               if ((i < 17 || i > 22) && i < 39) {
                 if (
                   line[i] != '' &&
+                  line[i] != 0 &&
+                  line[i] != '0' &&
                   (line[i] != undefined || line[i] != null)
                 ) {
                   const dateArray = data[1][i].split('.');
