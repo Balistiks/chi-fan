@@ -16,11 +16,13 @@ callbacks_router = Router()
 @callbacks_router.callback_query(F.data == 'salary')
 async def salary(callback: types.CallbackQuery, bot: Bot):
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    user = await users_service.get_by_tg_id(callback.from_user.id)
+    months = await salaries_service.get_months(user['name'])
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Зарплаты.png'),
         caption='Выбери месяц, чтобы узнать подробности 📅\n\n'
              'После этого ты сможешь детально изучить информацию о своей зарплате 💰',
-        reply_markup=keyboards.functionals.salary.SALARY_MOUNTHS_KEYBOARD
+        reply_markup=keyboards.functionals.salary.get_salary_months_keyboard(months)
     )
 
 
