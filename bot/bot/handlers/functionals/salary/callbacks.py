@@ -134,10 +134,10 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
 
     analytics_text += "\n<b>Корректировки:</b>\n"
 
-    analytics_text += f"  - Премии: {period_totals['total']['awards']:.0f}₽\n"
-    analytics_text += f"  - Штрафы: {period_totals['total']['fines']:.0f}₽\n"
-    analytics_text += f"  - Офф: {period_totals['total']['offZp']:.0f}₽\n"
-    analytics_text += f"  - Аванс: {period_totals['total']['advance']:.0f}₽\n"
+    analytics_text += f"  - Премии: {period_totals['total']['awards']}₽\n"
+    analytics_text += f"  - Штрафы: {period_totals['total']['fines']}₽\n"
+    analytics_text += f"  - Офф: {period_totals['total']['offZp']}₽\n"
+    analytics_text += f"  - Аванс: {period_totals['total']['advance']}₽\n"
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по дням.png'),
