@@ -74,15 +74,15 @@ async def salary_point(callback: types.CallbackQuery, bot: Bot, state: FSMContex
              f'\n<b>С 1 по 15 число</b> вы заработали:\n'
              f'👉 {formatted_amount_1}\n'
              f'<b>Комментарий:</b> {data_adjustment[0]['comment']}\n'
-             f'<b>Офф.зп/удержания:</b> {data_adjustment[0]["offZp"]}\n'
-             f'<b>Премия:</b> {data_adjustment[0]["awards"]}\n'
-             f'<b>Штрафы:</b> {data_adjustment[0]['fines']}\n'
+             f'<b>Офф.зп/удержания:</b> {data_adjustment[0]["offZp"]}₽\n'
+             f'<b>Премия:</b> {data_adjustment[0]["awards"]}₽\n'
+             f'<b>Штрафы:</b> {data_adjustment[0]['fines']}₽\n'
              f'\n<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n'
              f'👉 {formatted_amount_2}\n'
              f'<b>Комментарий:</b> {data_adjustment[1]['comment']}\n'
-             f'<b>Офф.зп/удержания:</b> {data_adjustment[1]["offZp"]}\n'
-             f'<b>Премия:</b> {data_adjustment[1]["awards"]}\n'
-             f'<b>Аванс:</b> {data_adjustment[1]['advance']}\n'
+             f'<b>Офф.зп/удержания:</b> {data_adjustment[1]["offZp"]}₽\n'
+             f'<b>Премия:</b> {data_adjustment[1]["awards"]}₽\n'
+             f'<b>Аванс:</b> {data_adjustment[1]['advance']}₽\n'
                 'Ваш труд ценен, а заработанное — заслуженно ваше! 🚀🔥',
         parse_mode='HTML',
         reply_markup=keyboards.functionals.salary.BACK_DETAILING_KEYBOARD
@@ -129,14 +129,14 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
     analytics_text += "\n<b>Итоговые суммы по периодам:</b>\n"
 
     analytics_text += f"  <b>Период 1-15:</b>\n"
-    analytics_text += f"  - Премии: {period_totals['1-15']['awards']}\n"
-    analytics_text += f"  - Штрафы: {period_totals['1-15']['fines']}\n"
-    analytics_text += f"  - Офф.зп/удержания: {period_totals['1-15']['offZp']}\n"
+    analytics_text += f"  - Премии: {period_totals['1-15']['awards']}₽\n"
+    analytics_text += f"  - Штрафы: {period_totals['1-15']['fines']}₽\n"
+    analytics_text += f"  - Офф.зп/удержания: {period_totals['1-15']['offZp']}₽\n"
 
     analytics_text += f"  <b>Период 16-31:</b>\n"
-    analytics_text += f"  - Премии: {period_totals['16-31']['awards']}\n"
-    analytics_text += f"  - Офф.зп/удержания: {period_totals['16-31']['offZp']}\n"
-    analytics_text += f"  - Аванс: {period_totals['16-31']['advance']}\n"
+    analytics_text += f"  - Премии: {period_totals['16-31']['awards']}₽\n"
+    analytics_text += f"  - Офф.зп/удержания: {period_totals['16-31']['offZp']}₽\n"
+    analytics_text += f"  - Аванс: {period_totals['16-31']['advance']}₽\n"
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по дням.png'),
