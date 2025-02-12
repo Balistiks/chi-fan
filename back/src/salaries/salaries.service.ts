@@ -34,7 +34,7 @@ export class SalariesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    await this.fetchDataFromTables(allMonths);
+    // await this.fetchDataFromTables(allMonths);
   }
 
   async saveName(name: string) {
