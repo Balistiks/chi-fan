@@ -8,6 +8,27 @@ import { Between, FindOptionsWhere } from 'typeorm';
 export class SalariesController {
   constructor(private readonly salariesService: SalariesService) {}
 
+  @Get('months/:employeeName')
+  async getMonthsSalaries(@Param('employeeName') employeeName: string) {
+    const salaries = await this.salariesService.findAll({
+      where: {
+        employeeName,
+      },
+    });
+
+    const salariesWithMonths = salaries.map((item) => {
+      return {
+        sum: item.sum,
+        month: new Date(item.date).toLocaleDateString('ru', { month: 'long' }),
+      };
+    });
+    return salariesWithMonths.reduce((r, a) => {
+      r[a.month] = r[a.month] || [];
+      r[a.month].push(a);
+      return r;
+    }, Object.create(null));
+  }
+
   @Get('points/:month/:employeeName')
   async getPointsName(
     @Param('month') month: number,
