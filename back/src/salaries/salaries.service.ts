@@ -77,11 +77,12 @@ export class SalariesService implements OnApplicationBootstrap {
                   const salary = await this.salaryRepository.findOne({
                     where: {
                       date,
-                      pointName: line[0],
-                      employeeName: line[1],
+                      tableIndex: `${data.indexOf(line)}${i}`,
                     },
                   });
                   if (salary != null) {
+                    salary.employeeName = line[1];
+                    salary.pointName = line[0];
                     salary.sum = line[i];
                     await this.salaryRepository.save(salary);
                   } else {
@@ -90,6 +91,7 @@ export class SalariesService implements OnApplicationBootstrap {
                     newSalary.employeeName = line[1];
                     newSalary.date = date;
                     newSalary.sum = line[i];
+                    newSalary.tableIndex = `${data.indexOf(line)}${i}`;
                     await this.salaryRepository.save(newSalary);
                   }
                 }
