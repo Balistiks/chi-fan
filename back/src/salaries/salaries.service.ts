@@ -5,6 +5,8 @@ import { Salary } from './entities/salary.entity';
 import {FindManyOptions, FindOneOptions, Repository} from 'typeorm';
 import { NamesService } from '../names/names.service';
 import { Name } from '../names/entities/name.entity';
+import { AdjustmentsService } from '../adjustments/adjustments.service';
+import { Adjustment } from '../adjustments/entities/adjustment.entity';
 
 const allMonths = [
   'Январь',
@@ -28,6 +30,7 @@ export class SalariesService implements OnApplicationBootstrap {
     private salaryRepository: Repository<Salary>,
     private readonly googleSheetsService: GoogleSheetsService,
     private readonly namesService: NamesService,
+    private readonly adjustmentsService: AdjustmentsService,
   ) {}
 
   async onApplicationBootstrap() {
@@ -43,6 +46,60 @@ export class SalariesService implements OnApplicationBootstrap {
       const newName = new Name();
       newName.name = name;
       await this.namesService.save(newName);
+    }
+  }
+
+  async saveAdjustment(month: string, data: any[], index: number, line: any[]) {
+    if (index == 17 || index == 39) {
+      const monthIndex = allMonths.indexOf(month);
+      const period = data[0][index].split(' ')[1];
+      const tableIndex = `${data.indexOf(line)}${index}`;
+      let comment: string;
+      let offZp: number;
+      let fines: number;
+      let awards: number;
+      let advance: number;
+      if (index == 17) {
+        comment = line[18] ?? '';
+        offZp = (line[19] != null || line[19] != undefined) && line[19] != '' ? line[19] : 0;
+        fines = (line[20] != null || line[20] != undefined) && line[20] != '' ? line[20] : 0;
+        awards = (line[21] != null || line[21] != undefined) && line[21] != '' ? line[21] : 0;
+      } else if (index == 39) {
+        comment = line[40] ?? '';
+        offZp = (line[41] != null || line[41] != undefined) && line[41] != '' ? line[41] : 0;
+        advance = (line[42] != null || line[42] != undefined) && line[42] != '' ? line[42] : 0;
+        awards = (line[43] != null || line[43] != undefined) && line[43] != '' ? line[43] : 0;
+      }
+      const adjustment = await this.adjustmentsService.findOne({
+        where: {
+          monthIndex,
+          period,
+          tableIndex,
+        },
+      });
+      if (adjustment != null) {
+        adjustment.employeeName = line[1];
+        adjustment.pointName = line[0];
+        adjustment.comment = comment;
+        adjustment.offZp = offZp;
+        adjustment.fines = fines;
+        adjustment.awards = awards;
+        adjustment.advance = advance;
+        await this.adjustmentsService.save(adjustment);
+      } else {
+        const newAdjustment = new Adjustment();
+        newAdjustment.employeeName = line[1];
+        newAdjustment.pointName = line[0];
+        newAdjustment.monthIndex = monthIndex;
+        newAdjustment.period = period;
+        newAdjustment.comment = comment;
+        newAdjustment.offZp = offZp;
+        newAdjustment.fines = fines;
+        newAdjustment.awards = awards;
+        newAdjustment.tableIndex = tableIndex;
+        newAdjustment.advance = advance;
+        await this.adjustmentsService.save(newAdjustment);
+      }
     }
   }
 
@@ -95,6 +152,8 @@ export class SalariesService implements OnApplicationBootstrap {
                     await this.salaryRepository.save(newSalary);
                   }
                 }
+              } else {
+                await this.saveAdjustment(month, data, i, line);
               }
             }
           }
