@@ -16,4 +16,7 @@ export class Salary {
 
   @Column({ nullable: false })
   sum: number;
+
+  @Column({ nullable: false })
+  tableIndex: string;
 }

@@ -47,6 +47,21 @@ export class RevenuesController {
     });
   }
 
+ @Get('date/:date')
+  async getByDate(@Param('date') dateString: string): Promise<Revenue[]> {
+    const date = new Date(dateString);
+    const startDate = new Date(date.setHours(0, 0, 0, 0));
+    const endDate = new Date(date.setHours(23, 59, 59, 999));
+
+
+    return await this.revenuesService.getAll({
+      where: {
+        date: Between(startDate, endDate),
+      },
+      relations: ['point'],
+    })
+  }
+
 
   @Get('amount/:id')
   async getOne(@Param('id') id: number): Promise<Revenue> {

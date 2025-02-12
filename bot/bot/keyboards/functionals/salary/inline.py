@@ -1,6 +1,26 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+def get_salary_months_keyboard(months: dict) -> InlineKeyboardMarkup:
+    buttons = []
+
+    salary_per_month = {}
+    for key, value in months.items():
+        salary_per_month[key] = 0
+        for salary in months[key]:
+            salary_per_month[key] += salary['sum']
+
+    for i in range(len(salary_per_month)):
+        month = list(salary_per_month.keys())[i]
+        salary = f'{salary_per_month[month]:,}'.replace(',', ' ')
+        buttons.append([InlineKeyboardButton(text=f'{month} - {salary}₽', callback_data=f'salary_{i+1}')])
+
+    buttons.append([InlineKeyboardButton(text='Вернуться в главное меню', callback_data='main_menu')])
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
 SALARY_MOUNTHS_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[
         [

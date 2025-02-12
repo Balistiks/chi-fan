@@ -4,19 +4,17 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot.services import revenues_service
 
 
-CHOOSE_KEYBOARD = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text='По точкам', callback_data='by_point'),
-        ],
-        [
-            InlineKeyboardButton(text='Общая', callback_data='all_point'),
-        ],
-        [
-            InlineKeyboardButton(text='Назад', callback_data='main_menu'),
-        ]
-    ]
-)
+
+async def choose_point(date: str) -> InlineKeyboardMarkup:
+    buttons = []
+
+    buttons.append([InlineKeyboardButton(text='По точкам', callback_data='by_point')])
+    buttons.append([InlineKeyboardButton(text='Общая', callback_data='all_point')])
+    buttons.append([InlineKeyboardButton(text=f'За {date}', callback_data=f'yestarday_analitic')])
+    buttons.append([InlineKeyboardButton(text='Назад', callback_data='main_menu')])
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
 
 TO_BACK_KEYBOARD = InlineKeyboardMarkup(
     inline_keyboard=[

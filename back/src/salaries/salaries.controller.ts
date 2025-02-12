@@ -8,6 +8,27 @@ import { Between, FindOptionsWhere } from 'typeorm';
 export class SalariesController {
   constructor(private readonly salariesService: SalariesService) {}
 
+  @Get('months/:employeeName')
+  async getMonthsSalaries(@Param('employeeName') employeeName: string) {
+    const salaries = await this.salariesService.findAll({
+      where: {
+        employeeName,
+      },
+    });
+
+    const salariesWithMonths = salaries.map((item) => {
+      return {
+        sum: item.sum,
+        month: new Date(item.date).toLocaleDateString('ru', { month: 'long' }),
+      };
+    });
+    return salariesWithMonths.reduce((r, a) => {
+      r[a.month] = r[a.month] || [];
+      r[a.month].push(a);
+      return r;
+    }, Object.create(null));
+  }
+
   @Get('points/:month/:employeeName')
   async getPointsName(
     @Param('month') month: number,
@@ -25,6 +46,9 @@ export class SalariesController {
     const salaries = (
       await this.salariesService.findAll({
         where,
+        order: {
+          date: 'ASC',
+        },
       })
     ).map((salary) => salary.pointName);
 
@@ -47,6 +71,9 @@ export class SalariesController {
 
         return await this.salariesService.findAll({
             where,
+            order: {
+              date: 'ASC',
+            },
         });
     }
 
@@ -67,6 +94,9 @@ export class SalariesController {
           };
         const salaries = await this.salariesService.findAll({
             where,
+            order: {
+              date: 'ASC',
+            },
         });
       let sum1 = 0;
       let sum2 = 0;

@@ -15,6 +15,18 @@ async def get_by_id(point_id: int) -> dict | None:
             return None
 
 
+async def get_by_date(date: str) -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.get(
+                f'{url}/revenues/date/{date}'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
+
+
 async def get_by_id_amount(id: int) -> dict | None:
     async with aiohttp.ClientSession(
         headers=headers
