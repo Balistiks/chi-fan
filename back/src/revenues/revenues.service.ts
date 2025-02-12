@@ -15,7 +15,7 @@ export class RevenuesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    // await this.fetchDataFromTable();
+    await this.fetchDataFromTable();
   }
 
   async fetchDataFromTable() {
