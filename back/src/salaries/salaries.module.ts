@@ -5,12 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Salary } from './entities/salary.entity';
 import { SalariesController } from './salaries.controller';
 import { NamesModule } from '../names/names.module';
+import { AdjustmentsModule } from '../adjustments/adjustments.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Salary]),
     GoogleSheetsModule,
     NamesModule,
+    AdjustmentsModule,
   ],
   controllers: [SalariesController],
   providers: [SalariesService],
