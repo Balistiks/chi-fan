@@ -14,10 +14,11 @@ callbacks_router = Router()
 @callbacks_router.callback_query(F.data == 'analitic')
 async def analitic(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
-
+    date = datetime.today()- timedelta(days=1)
+    await state.update_data(yestarday_date=date.strftime("%Y-%m-%d"))
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Выручка.png'),
-        reply_markup=keyboards.functionals.analitic.CHOOSE_KEYBOARD
+        reply_markup=await keyboards.functionals.analitic.choose_point(date=date.strftime('%d.%m.%Y'))
     )
 
 
@@ -33,28 +34,35 @@ async def all_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext, 
     ).execute()
 
     value_str = result.get('values', [[]])[0][0]
-
     cent_plan = value_str.replace(' ', '').replace('\xa0', '').replace('₽', '').strip()
     plan_amount = int(cent_plan)
-    sum = 0
+
+    total_sum = 0
     revenues_by_point = defaultdict(int)
+
     for revenue in data_revenues:
         point_name = revenue['point']['name']
         revenues_by_point[point_name] += revenue['amount']
-        sum += revenue['amount']
+        total_sum += revenue['amount']
 
-    message_text = 'Детальная аналитика за месяц  📅\n\n- Точка | Выручка | Процент от плана\n\n'
+    message_text = 'Детальная аналитика за месяц 📅\n\n'
+    message_text += '<pre>Точка          | Выручка    | % плана\n'
 
-    total_revenue = 0
     for point, amount in revenues_by_point.items():
-        message_text += f'- {point} | {amount} | {(amount / plan_amount) * 100:.2f}\n'
-        total_revenue += amount
+        formatted_amount = "{:,.0f}".format(amount).replace(',', ' ') + "₽"
+        percentage_of_plan = (amount / plan_amount) * 100
+        message_text += f'{point:<14} | {formatted_amount:<10} | {percentage_of_plan:.2f}%\n'
+    message_text += "</pre>"
+    percent_of_plan = (total_sum / plan_amount) * 100
+    formatted_total_sum = "{:,.0f}".format(total_sum).replace(',', ' ')
+    formatted_plan_amount = "{:,.0f}".format(plan_amount).replace(',', ' ')
 
-    percent_of_plan = (sum / plan_amount) * 100
-
-    message_text += f'\nОбщий факт: {sum}\nОбщий план: {plan_amount}\nПроцент от плана: {percent_of_plan:.2f}'
+    message_text += f'\n\n\nОбщий факт: {formatted_total_sum}₽\n'
+    message_text += f'Общий план: {formatted_plan_amount}₽\n'
+    message_text += f'Процент от плана: {percent_of_plan:.2f}%'
     await callback.message.answer(
         text=message_text,
+        parse_mode='HTML',
         reply_markup=keyboards.functionals.analitic.TO_BACK_KEYBOARD
     )
 
@@ -68,6 +76,52 @@ async def by_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
         text='Выберите точку',
         reply_markup=await keyboards.functionals.analitic.get_point_keyboard(data_revenues=data_revenues)
     )
+
+
+@callbacks_router.callback_query(F.data == 'yestarday_analitic')
+async def analiyestarday_analitictic(callback: types.CallbackQuery, bot: Bot, state: FSMContext, sheet):
+    await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
+
+    data = await state.get_data()
+    revenues = await revenues_service.get_by_date(data['yestarday_date'])
+
+    total_sum = 0
+    revenues_by_point = defaultdict(int)
+
+    result = sheet.values().get(
+        spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+        range='Аналитика!K2'
+    ).execute()
+
+    value_str = result.get('values', [[]])[0][0]
+    cent_plan = value_str.replace(' ', '').replace('\xa0', '').replace('₽', '').strip()
+    plan_amount = int(cent_plan)
+
+    for revenue in revenues:
+        point_name = revenue['point']['name']
+        revenues_by_point[point_name] += revenue['amount']
+        total_sum += revenue['amount']
+
+    message_text = 'Детальная аналитика за вчера 📅\n\n'
+    message_text += '<pre>Точка          | Выручка    | % плана\n'
+
+    for point, amount in revenues_by_point.items():
+        formatted_amount = "{:,.0f}".format(amount).replace(',', ' ') + "₽"
+        percentage_of_plan = (amount / plan_amount) * 100 if plan_amount > 0 else 0
+        message_text += f'{point:<14} | {formatted_amount:<10} | {percentage_of_plan:.2f}%\n'
+
+    message_text += "</pre>"
+    formatted_total_sum = "{:,.0f}".format(total_sum).replace(',', ' ')
+    formatted_plan_amount = "{:,.0f}".format(plan_amount).replace(',', ' ')
+
+    message_text += f'\n\n\nОбщий факт: {formatted_total_sum}₽\nОбщий план: {formatted_plan_amount}₽'
+
+    await callback.message.answer(
+        text=message_text,
+        parse_mode='HTML',
+        reply_markup=keyboards.functionals.analitic.TO_BACK_KEYBOARD
+    )
+
 
 
 @callbacks_router.callback_query(F.data.startswith('analitic:'))
@@ -111,11 +165,13 @@ async def get_day(callback: types.CallbackQuery, state: FSMContext, sheet):
 
     actual_revenue = data_revenues['amount']
     percent_of_plan = (actual_revenue / plan_amount) * 100
+    formatted_actual_revenue = "{:,}".format(int(actual_revenue)).replace(',', ' ')
 
     await callback.message.answer(
         text=f'Детальная аналитика по дням за месяц  📅\n\n'
-              f'- Дата | Точка | Выручка\n{date} | {data_revenues["point"]['name']} | {actual_revenue}\n\n'
-              f'Процент от плана: {percent_of_plan:.2f}% ',
+              f'<pre>Дата       | Точка          | Выручка\n{date:<10} | {data_revenues["point"]['name']:<14} | {formatted_actual_revenue}₽</pre>\n\n'
+              f'\n\nПроцент от плана: {percent_of_plan:.2f}% ',
+        parse_mode='HTML',
         reply_markup=keyboards.functionals.analitic.TO_BACK_KEYBOARD
     )
 
@@ -161,22 +217,24 @@ async def get_week(callback: types.CallbackQuery, bot: Bot, state: FSMContext, s
     start_date, end_date = periods[week_index]
 
     message_text = f'Детальная аналитика по дням за период 📅\n\n' \
-                   f'- Дата | Точка | Выручка\n'
+                   f'<pre>Дата       | Точка          | Выручка\n'
 
     total_revenue = 0
     for revenue in data_revenues:
         date = datetime.strptime(revenue['date'], "%Y-%m-%d").date()
         if start_date <= date <= end_date:
             formatted_date = date.strftime("%d.%m.%Y")
-            message_text += f'{formatted_date} | {revenue["point"]["name"]} | {revenue["amount"]}\n'
+            formatted_revenue = "{:,}".format(int(revenue['amount'])).replace(',', ' ')
+            message_text += f'{formatted_date:<10} | {revenue["point"]["name"]:<14} | {formatted_revenue}₽\n'
             total_revenue += revenue['amount']
-
+    message_text += "</pre>"
     percentage_of_plan = (total_revenue / plan_amount * 100)
 
-    message_text += f'\nПроцент от плана: {percentage_of_plan:.2f}%'
+    message_text += f'\n\n\nПроцент от плана: {percentage_of_plan:.2f}%'
 
     await callback.message.answer(
         text=message_text,
+        parse_mode='HTML',
         reply_markup=keyboards.functionals.analitic.TO_BACK_KEYBOARD
     )
 
@@ -199,21 +257,23 @@ async def month(callback: types.CallbackQuery, bot: Bot, state: FSMContext, shee
     cent_plan = value_str.replace(' ', '').replace('\xa0', '').replace('₽', '').strip()
     plan_amount = int(cent_plan)
 
-    message_text = 'Детальная аналитика по дням за месяц 📅\n\n- Дата | Точка | Выручка\n\n'
+    message_text = 'Детальная аналитика по дням за месяц 📅\n\n<pre>Дата       | Точка          | Выручка\n'
     total_revenue = 0
 
     for record in data_revenues:
         date_str = datetime.fromisoformat(record['date']).strftime("%Y-%m-%d")
         point_name = record['point']['name']
         revenue = record['amount']
-        message_text += f"- {date_str} | {point_name} | {revenue}\n"
+        formatted_revenue = "{:,}".format(int(revenue)).replace(',', ' ')
+        message_text += f"{date_str:<10} | {point_name:<14} | {formatted_revenue}₽\n"
         total_revenue += revenue
-
+    message_text += "</pre>"
     percentage_of_plan = (total_revenue / plan_amount * 100) if plan_amount > 0 else 0
 
-    message_text += f"\nПроцент от плана: {percentage_of_plan:.2f}%"
+    message_text += f"\n\n\nПроцент от плана: {percentage_of_plan:.2f}%"
 
     await callback.message.answer(
         text=message_text,
+        parse_mode='HTML',
         reply_markup=keyboards.functionals.analitic.TO_BACK_KEYBOARD
     )
