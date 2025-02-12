@@ -110,34 +110,34 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
         analytics_text += f"{date_str:<8} | {item['pointName']:<12} |{formatted_sum}\n"
 
     analytics_text += "</pre>"
-    period_totals = {
-        "1-15": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""},
-        "16-31": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""},
-        "total": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""}
-    }
-
-    for point in unique_points:
-        data_adjustment = await adjustments_service.get_all_by_names(point, user_name, index_mouth)
-
-        for adjustment in data_adjustment:
-            period = adjustment['period']
-            if period in period_totals:
-                period_totals[period]['awards'] += adjustment.get('awards', 0)
-                period_totals[period]['fines'] += adjustment.get('fines', 0) or 0
-                period_totals[period]['offZp'] += adjustment.get('offZp', 0)
-                period_totals[period]['advance'] += adjustment.get('advance', 0) or 0
-
-            period_totals["total"]['awards'] += adjustment.get('awards', 0)
-            period_totals["total"]['fines'] += adjustment.get('fines', 0) or 0
-            period_totals["total"]['offZp'] += adjustment.get('offZp', 0)
-            period_totals["total"]['advance'] += adjustment.get('advance', 0) or 0
-
-    analytics_text += "\n<b>Корректировки:</b>\n"
-
-    analytics_text += f"  - Премии: {period_totals['total']['awards']}₽\n"
-    analytics_text += f"  - Штрафы: {period_totals['total']['fines']}₽\n"
-    analytics_text += f"  - Офф: {period_totals['total']['offZp']}₽\n"
-    analytics_text += f"  - Аванс: {period_totals['total']['advance']}₽\n"
+    # period_totals = {
+    #     "1-15": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""},
+    #     "16-31": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""},
+    #     "total": {"awards": 0, "fines": 0, "offZp": 0, "advance": 0, "comment": ""}
+    # }
+    #
+    # for point in unique_points:
+    #     data_adjustment = await adjustments_service.get_all_by_names(point, user_name, index_mouth)
+    #
+    #     for adjustment in data_adjustment:
+    #         period = adjustment['period']
+    #         if period in period_totals:
+    #             period_totals[period]['awards'] += adjustment.get('awards', 0)
+    #             period_totals[period]['fines'] += adjustment.get('fines', 0) or 0
+    #             period_totals[period]['offZp'] += adjustment.get('offZp', 0)
+    #             period_totals[period]['advance'] += adjustment.get('advance', 0) or 0
+    #
+    #         period_totals["total"]['awards'] += adjustment.get('awards', 0)
+    #         period_totals["total"]['fines'] += adjustment.get('fines', 0) or 0
+    #         period_totals["total"]['offZp'] += adjustment.get('offZp', 0)
+    #         period_totals["total"]['advance'] += adjustment.get('advance', 0) or 0
+    #
+    # analytics_text += "\n<b>Корректировки:</b>\n"
+    #
+    # analytics_text += f"  - Премии: {period_totals['total']['awards']}₽\n"
+    # analytics_text += f"  - Штрафы: {period_totals['total']['fines']}₽\n"
+    # analytics_text += f"  - Офф: {period_totals['total']['offZp']}₽\n"
+    # analytics_text += f"  - Аванс: {period_totals['total']['advance']}₽\n"
 
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по дням.png'),
