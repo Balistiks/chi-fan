@@ -25,6 +25,9 @@ export class SalariesController {
     const salaries = (
       await this.salariesService.findAll({
         where,
+        order: {
+          date: 'ASC',
+        },
       })
     ).map((salary) => salary.pointName);
 
@@ -47,6 +50,9 @@ export class SalariesController {
 
         return await this.salariesService.findAll({
             where,
+            order: {
+              date: 'ASC',
+            },
         });
     }
 
@@ -67,6 +73,9 @@ export class SalariesController {
           };
         const salaries = await this.salariesService.findAll({
             where,
+            order: {
+              date: 'ASC',
+            },
         });
       let sum1 = 0;
       let sum2 = 0;
