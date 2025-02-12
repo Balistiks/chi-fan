@@ -63,10 +63,12 @@ async def salary_point(callback: types.CallbackQuery, bot: Bot, state: FSMContex
     point_name = callback.data.split('_')[1]
     sums = await salaries_service.get_sums(point_name, data['user_name'], data['mouth'])
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
+    formatted_amount_1 = "{:,.0f}".format(sums['sum1']).replace(',', ' ') + "₽"
+    formatted_amount_2 = "{:,.0f}".format(sums['sum2']).replace(',', ' ') + "₽"
     await callback.message.answer(
         text='<b>Итоги по вашим выплатам на этой точке:</b> \n\n'
-                f'<b>С 1 по 15 число</b> вы заработали:\n👉 {sums['sum1']}\n'
-                f'<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n👉 {sums['sum2']}\n\n'
+                f'<b>С 1 по 15 число</b> вы заработали:\n👉 {formatted_amount_1}\n'
+                f'<b>С 16 по 30/31 число</b> на вашем счету оказалось:\n👉 {formatted_amount_2}\n\n'
                 'Ваш труд ценен, а заработанное — заслуженно ваше! 🚀🔥',
         parse_mode='HTML',
         reply_markup=keyboards.functionals.salary.BACK_DETAILING_KEYBOARD
@@ -83,13 +85,15 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
     await functions.delete_message(bot=bot, chat_id=callback.message.chat.id, message_id=callback.message.message_id)
 
     analytics_text = "<b>Детальная аналитика по дням за месяц</b> 📅\n\n"
-    analytics_text += "<b>- Дата | Точка | Сумма </b>\n"
+    analytics_text += "<pre>Дата       |   Точка      |Сумма \n"
 
 
     for item in data_salary:
         date_str = datetime.strptime(item['date'], '%Y-%m-%d').strftime('%d.%m.%Y')
-        analytics_text += f"- {date_str} | {item['pointName']} | {item['sum']}\n"
+        formatted_sum = "{:,.0f}".format(item['sum']).replace(',', ' ') + "₽"
+        analytics_text += f"{date_str:<8} | {item['pointName']:<12} |{formatted_sum}\n"
 
+    analytics_text += "</pre>"
     await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Детализация по дням.png'),
         caption=analytics_text,
