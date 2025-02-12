@@ -34,7 +34,7 @@ export class SalariesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    // await this.fetchDataFromTables(allMonths);
+    await this.fetchDataFromTables(allMonths);
   }
 
   async saveName(name: string) {
@@ -108,7 +108,7 @@ export class SalariesService implements OnApplicationBootstrap {
     for (const month of months) {
       try {
         const data = await this.googleSheetsService.getSheetData(
-          '1e6mtbH2xuXWK1deWG29YoNt8qzGO_qz4kAqO4_wEVWs',
+          '1Z2fjnG3PZpg41jeKy1f3hQforJ7iTm9HP2JcAr6IzxE',
           `${month} ${today.toLocaleDateString('ru', { year: '2-digit' })}`,
         );
         const slicedData = data.slice(5);
