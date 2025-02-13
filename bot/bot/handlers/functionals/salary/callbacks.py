@@ -102,12 +102,12 @@ async def salary_by_days(callback: types.CallbackQuery, bot: Bot, state: FSMCont
     unique_points = set(item['pointName'] for item in data_salary)
 
     analytics_text = "<b>Детальная аналитика по дням за месяц</b> 📅\n\n"
-    analytics_text += "<pre>Дата       |   Точка      |Сумма \n"
+    analytics_text += "<pre>Дата |   Точка      |Сумма \n"
 
     for item in data_salary:
-        date_str = datetime.strptime(item['date'], '%Y-%m-%d').strftime('%d.%m.%Y')
+        date_str = datetime.strptime(item['date'], '%Y-%m-%d').strftime('%d.%m')
         formatted_sum = "{:,.0f}".format(item['sum']).replace(',', ' ') + "₽"
-        analytics_text += f"{date_str:<8} | {item['pointName']:<12} |{formatted_sum}\n"
+        analytics_text += f"{date_str:<3}| {item['pointName']:<12} |{formatted_sum}\n"
 
     analytics_text += "</pre>"
     # period_totals = {
