@@ -67,38 +67,38 @@ services:
         aliases:
           - db
 
-#  web:
-#    build:
-#      context: web
-#      dockerfile: ../buildfiles/web.dockerfile
-#    restart: always
-#    env_file:
-#      - .env
-#    ports:
-#      - "8080:8080"
-#    volumes:
-#      - ./web/web:/app/web
-#    networks:
-#      bot:
-#        aliases:
-#          - web
-#  webapp:
-#    build:
-#      context: ./webapp
-#      dockerfile: ../buildfiles/webapp.dockerfile
-#    restart: always
-#    networks:
-#      bot:
-#        aliases:
-#          - webapp
-#    env_file:
-#      - .env
-#    ports:
-#      - '8081:8081'
-#    volumes:
-#      - './webapp/src:/app/src'
-#    depends_on:
-#      - back
+  web:
+    build:
+      context: web
+      dockerfile: ../buildfiles/web.dockerfile
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./web/web:/app/web
+    networks:
+      bot:
+        aliases:
+          - web
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: ../buildfiles/webapp.dockerfile
+    restart: always
+    networks:
+      bot:
+        aliases:
+          - webapp
+    env_file:
+      - .env
+    ports:
+      - '8081:8081'
+    volumes:
+      - './webapp/src:/app/src'
+    depends_on:
+      - back
 
 
 networks:
