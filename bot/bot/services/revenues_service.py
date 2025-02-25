@@ -49,3 +49,15 @@ async def get_all() -> dict | None:
             )).json()
         except aiohttp.client_exceptions.ContentTypeError:
             return None
+
+
+async def update() -> dict | None:
+    async with aiohttp.ClientSession(
+        headers=headers
+    ) as session:
+        try:
+            return await (await session.patch(
+                f'{url}/revenues'
+            )).json()
+        except aiohttp.client_exceptions.ContentTypeError:
+            return None
