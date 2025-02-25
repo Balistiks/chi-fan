@@ -167,7 +167,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                 ).execute()
                 value = response['values'][0][0]
                 cleaned_value = value.replace('₽', '').replace(' ', '')
-                if int(cleaned_value) == 0:
+                if int(cleaned_value) < 0:
                     message_text = f'{cleaned_value}р, проверьте правильность закрытия кассы'
                 else:
                     message_text = 'Минуса по кассе отсутствуют'
