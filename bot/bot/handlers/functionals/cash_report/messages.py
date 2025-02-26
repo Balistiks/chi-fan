@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from googleapiclient.http import MediaIoBaseUpload
 
 from bot.misc import functions, delete_message
-from bot.services import users_service, cash_report_service
+from bot.services import users_service, cash_report_service, revenues_service
 from bot.states import CashReportState
 from bot import keyboards
 
@@ -62,6 +62,7 @@ async def get_morning_recount(message: types.Message, bot: Bot, state: FSMContex
                                                                                           year=data['year'],
                                                                                           point_name=data['point_name'])
             )
+            await revenues_service.update()
         except Exception as e:
             print(e)
             await message.answer(
@@ -126,6 +127,7 @@ async def get_checks_file(message: types.Message, bot: Bot, state: FSMContext, f
                                                                                           year=data['year'],
                                                                                           point_name=data['point_name'])
             )
+            await revenues_service.update()
         except Exception as e:
             print(e)
             await message.answer(
@@ -205,6 +207,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                                                                                               point_name=data[
                                                                                                   'point_name'])
                 )
+            await revenues_service.update()
         except Exception as e:
             print(e)
             await message.answer(
@@ -255,6 +258,7 @@ async def get_comment(message: types.Message, bot: Bot, state: FSMContext, sheet
                                                                                           year=data['year'],
                                                                                           point_name=data['point_name'])
             )
+            await revenues_service.update()
         except Exception as e:
             print(e)
             await message.answer(
