@@ -162,6 +162,19 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                     'values': [[int(message.text)]]
                 }
             ).execute()
+            if data['data_cash'] == 'M':
+                response = sheet.values().get(
+                    spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
+                    range=f"{data['point_name']}!N{day + 1}",
+                ).execute()
+                value = response['values'][0][0]
+                cleaned_value = value.replace('₽', '').replace(' ', '')
+                if int(cleaned_value) < 0:
+                    message_text = f'{cleaned_value}р, проверьте правильность закрытия кассы'
+                else:
+                    message_text = 'Минуса по кассе отсутствуют'
+
+                await state.update_data(message_text=message_text)
             items = keyboards.functionals.cash_report.data_cash_report_keyboard
             for item in items:
                 if item['callback'] == data['callback_data']:
@@ -172,14 +185,28 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                     })
             await state.update_data(current_page=0)
             await delete_message(bot, message.chat.id, download_message.message_id)
-            await message.answer_photo(
-                photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-                reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
-                                                                                          day=data['day'],
-                                                                                          mouth=data['mouth'],
-                                                                                          year=data['year'],
-                                                                                          point_name=data['point_name'])
-            )
+            data = await state.get_data()
+            message_text = data.get('message_text', None)
+            if message_text is None:
+                await message.answer_photo(
+                    photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                    reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                              day=data['day'],
+                                                                                              mouth=data['mouth'],
+                                                                                              year=data['year'],
+                                                                                              point_name=data['point_name'])
+                )
+            else:
+                await message.answer_photo(
+                    photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+                    caption=message_text,
+                    reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0,
+                                                                                              day=data['day'],
+                                                                                              mouth=data['mouth'],
+                                                                                              year=data['year'],
+                                                                                              point_name=data[
+                                                                                                  'point_name'])
+                )
             await revenues_service.update()
         except Exception as e:
             print(e)
