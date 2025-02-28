@@ -148,10 +148,13 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
     data = await state.get_data()
     await functions.delete_message(bot=bot, chat_id=message.chat.id, message_id=message.message_id)
     await message.bot.delete_message(chat_id=message.chat.id, message_id=data['last_message_id'])
+    error_code = ''
     if message.text.isdigit():
+        error_code = 'date_error'
         day = datetime.strptime(data['date'], '%d.%m.%Y').timetuple().tm_yday
         try:
             download_message = await message.answer('Загрузка 🔄')
+            error_code = 'table_error'
             sheet.values().update(
                 spreadsheetId='1EyXADWIjOFeYpPRxXD_UD51ZcIH0zvHE2m1e_oJc6Nw',
                 range=f"{data['point_name']}!{data['data_cash']}{day + 1}",
@@ -161,6 +164,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                 }
             ).execute()
             items = keyboards.functionals.cash_report.data_cash_report_keyboard
+            error_code = 'items_error'
             for item in items:
                 if item['callback'] == data['callback_data']:
                     await cash_report_service.create({
@@ -169,6 +173,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                         'point': int(data['id_point']),
                     })
             await state.update_data(current_page=0)
+            error_code = 'download_mes_error'
             await delete_message(bot, message.chat.id, download_message.message_id)
             await message.answer_photo(
                 photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
@@ -181,7 +186,7 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
         except Exception as e:
             print(e)
             await message.answer(
-                'Произошла ошибка 🚫\n'
+                f'Произошла ошибка 🚫 (Код ошибки: {error_code})\n'
                 '\nПопробуйте снова',
                 reply_markup=await keyboards.functionals.cash_report.back_keyboard(data['point_name'])
             )
