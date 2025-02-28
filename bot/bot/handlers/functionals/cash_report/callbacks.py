@@ -46,14 +46,26 @@ async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext)
     mouth = data['date'].split('.')[1]
     year = data['date'].split('.')[2]
 
+    message_text = data.get('message_text', None)
+
     point = await points_service.get_by_name(callback.data.split(':')[1])
 
     await state.update_data(point_name=callback.data.split(':')[1], day=day, mouth=mouth, year=year, id_point=point['id'], current_page=0)
 
-    await callback.message.answer_photo(
+    if message_text is None:
+        await callback.message.answer_photo(
         photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
         reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day, mouth=mouth, year=year, point_name=callback.data.split(':')[1])
-    )
+        )
+    else:
+        await callback.message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            caption=message_text,
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=0, day=day,
+                                                                                      mouth=mouth, year=year,
+                                                                                      point_name=
+                                                                                      callback.data.split(':')[1])
+        )
 
 
 @callbacks_router.callback_query(F.data.startswith('cash_report-prev_page'))
@@ -61,6 +73,7 @@ async def cash_point(callback: types.CallbackQuery, bot: Bot, state: FSMContext)
 async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     current_page = data.get('current_page', 0)
+    message_text = data.get('message_text', None)
 
     if 'prev_page' in callback.data:
         current_page -= 1
@@ -70,11 +83,21 @@ async def slider_cash_report(callback: types.CallbackQuery, state: FSMContext):
     await state.update_data(current_page=current_page)
 
     await functions.delete_message(callback.bot, callback.message.chat.id, callback.message.message_id)
-    await callback.message.answer_photo(
-        photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
-        reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=current_page, day=data['day'], mouth=data['mouth'], year=data['year'], point_name=data['point_name'])
-    )
-
+    if message_text is None:
+        await callback.message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=current_page, day=data['day'], mouth=data['mouth'], year=data['year'], point_name=data['point_name'])
+        )
+    else:
+        await callback.message.answer_photo(
+            photo=types.FSInputFile('./files/Кассовый отчет главная.png'),
+            caption=message_text,
+            reply_markup=await keyboards.functionals.cash_report.cash_report_keyboard(current_page=current_page,
+                                                                                      day=data['day'],
+                                                                                      mouth=data['mouth'],
+                                                                                      year=data['year'],
+                                                                                      point_name=data['point_name'])
+        )
 
 @callbacks_router.callback_query(F.data.startswith('recount:'))
 async def recount(callback: types.CallbackQuery, bot: Bot, state: FSMContext):
