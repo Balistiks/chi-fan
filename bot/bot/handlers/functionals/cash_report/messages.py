@@ -171,7 +171,15 @@ async def get_money_begin(message: types.Message, bot: Bot, state: FSMContext, s
                     range=f"{data['point_name']}!N{day + 1}",
                 ).execute()
                 value = response['values'][0][0]
-                cleaned_value = value.replace('₽', '').replace(' ', '')
+                cleaned_value = ''
+                for i in value:
+                    if i == '-':
+                        cleaned_value = f'{cleaned_value}{i}'
+                    else:
+                        try:
+                            cleaned_value = f'{cleaned_value}{int(i)}'
+                        except Exception as e:
+                            print(e)
                 if int(cleaned_value) < 0:
                     message_text = f'{cleaned_value}р, проверьте правильность закрытия кассы'
                 else:
